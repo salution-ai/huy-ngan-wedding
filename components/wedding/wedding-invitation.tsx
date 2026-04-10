@@ -47,13 +47,13 @@ export function WeddingInvitation() {
       <div className="h-screen w-full text-black">
         <div className="relative flex justify-center items-center h-full">
           {/* Background */}
-          <div className="absolute inset-0 bg-[url('/gallery/TAJ09178.JPG')] bg-cover bg-center"></div>
+          <div className="absolute inset-0 bg-[url('/gallery/hero.JPG')] bg-cover bg-center"></div>
 
           {/* Overlay màu */}
           <div className="absolute inset-0 bg-black/50"></div>
 
           {/* Content */}
-          <div className="relative z-10 text-white flex flex-col items-center justify-around h-full gap-3">
+          <div className="relative z-10 text-white flex flex-col items-center justify-between h-full gap-3 py-10">
             <div className="flex flex-col items-center justify-center gap-3">
               <p className="text-2xl font-bold">
                 <span className="font-wedding-serif">Kính gửi:</span>{" "}

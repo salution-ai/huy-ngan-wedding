@@ -6,56 +6,119 @@ import {
   motion,
   MotionConfig,
 } from "framer-motion"
+import { weddingContent } from "@/content/wedding"
 
-type YearSlide = {
+type ImagesSlide = {
+  kind: "images"
   year: string
   topImageSrc: string
   bottomImageSrc: string
 }
 
+type InvitationSlide = {
+  kind: "invitation"
+  year: string
+}
+
+type YearSlide = ImagesSlide | InvitationSlide
+
 function YearFrame({ slide }: { slide: YearSlide }) {
   const overlapPct = 12
   return (
     <div className="relative h-screen w-full">
-      <div className="relative h-screen w-full overflow-hidden">
-        {/* Top image (fade out at bottom) */}
-        <div
-          className="absolute left-0 top-0 w-full"
-          style={{ height: `${50 + overlapPct / 2}%` }}
-        >
-          <img
-            src={slide.topImageSrc}
-            alt="Huy Ngân Wedding"
-            className="h-full w-full object-cover"
-            style={{
-              WebkitMaskImage:
-                "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)",
-              maskImage:
-                "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)",
-            }}
-          />
-        </div>
+      {slide.kind === "images" ? (
+        <div className="relative h-screen w-full overflow-hidden">
+          {/* Top image (fade out at bottom) */}
+          <div
+            className="absolute left-0 top-0 w-full"
+            style={{ height: `${50 + overlapPct / 2}%` }}
+          >
+            <img
+              src={slide.topImageSrc}
+              alt="Huy Ngân Wedding"
+              className="h-full w-full object-cover"
+              style={{
+                WebkitMaskImage:
+                  "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)",
+                maskImage:
+                  "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)",
+              }}
+            />
+          </div>
 
-        {/* Bottom image (fade out at top) */}
-        <div
-          className="absolute bottom-0 left-0 w-full"
-          style={{ height: `${50 + overlapPct / 2}%` }}
-        >
-          <img
-            src={slide.bottomImageSrc}
-            alt="Huy Ngân Wedding"
-            className="h-full w-full object-cover"
-            style={{
-              WebkitMaskImage:
-                "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)",
-              maskImage:
-                "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)",
-            }}
-          />
-        </div>
+          {/* Bottom image (fade out at top) */}
+          <div
+            className="absolute bottom-0 left-0 w-full"
+            style={{ height: `${50 + overlapPct / 2}%` }}
+          >
+            <img
+              src={slide.bottomImageSrc}
+              alt="Huy Ngân Wedding"
+              className="h-full w-full object-cover"
+              style={{
+                WebkitMaskImage:
+                  "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)",
+                maskImage:
+                  "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)",
+              }}
+            />
+          </div>
 
-        <div className="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-t from-black to-transparent" />
-      </div>
+          <div className="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-t from-black to-transparent" />
+        </div>
+      ) : (
+        <div className="relative h-screen w-full overflow-hidden bg-[#faf7f2] text-stone-900">
+          <div className="absolute inset-0 bg-[url('/gallery/TAJ09178.JPG')] bg-cover bg-center opacity-20" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#faf7f2]/80 via-[#faf7f2]/92 to-[#faf7f2]" />
+
+          <div className="relative mx-auto flex h-full w-full max-w-3xl flex-col items-center justify-center px-5 py-10">
+            <div className="w-full rounded-3xl border border-primary/15 bg-white/80 p-6 shadow-xl shadow-black/5 backdrop-blur-sm md:p-10">
+              <p className="text-center text-xs font-semibold uppercase tracking-[0.35em] text-primary">
+                Thiệp mời
+              </p>
+              <h2 className="mt-4 text-center text-3xl font-semibold tracking-tight text-stone-900 md:text-4xl">
+                {weddingContent.couple.groomFullName}
+                <span className="mx-2 text-primary">♥</span>
+                {weddingContent.couple.brideFullName}
+              </h2>
+
+              <div className="mt-6 text-center">
+                <p className="text-base font-medium text-stone-800 md:text-lg">
+                  {weddingContent.date.weekdayAndDate}
+                </p>
+                <p className="mt-1 text-sm text-stone-600">
+                  {weddingContent.date.lunarHint}
+                </p>
+              </div>
+
+              <div className="mt-8 grid gap-4 md:grid-cols-2">
+                {weddingContent.events.slice(0, 2).map((ev) => (
+                  <div
+                    key={ev.id}
+                    className="rounded-2xl border border-primary/15 bg-white/70 p-5"
+                  >
+                    <p className="text-sm font-semibold text-primary">{ev.label}</p>
+                    <p className="mt-2 text-2xl font-semibold text-stone-900">
+                      {ev.time}
+                      <span className="ml-2 text-sm font-medium text-stone-600">
+                        — {ev.dateShort}
+                      </span>
+                    </p>
+                    <p className="mt-3 font-medium text-stone-800">{ev.venueName}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-stone-600">
+                      {ev.address}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <p className="mt-8 text-center text-sm italic text-stone-700">
+                {weddingContent.closingLine}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Old-film warm overlay (only in YearScroll) */}
       <div
@@ -91,9 +154,6 @@ export function YearScroll() {
   const slides = useMemo<YearSlide[]>(() => {
     // NOTE: Hiện repo chỉ có 3 ảnh trong /public/gallery.
     // Bạn có thể thay src từng năm sau, logic scroll sẽ tự chạy 2016→2026.
-    const fallbackTop = "/gallery/TAJ09178.JPG"
-    const fallbackBottom = "/gallery/TAJ09178.JPG"
-
     const byYear: Record<string, { top: string; bottom: string }> = {
       "2016": { top: "/gallery/2016.jpg", bottom: "/gallery/2016%20(2).jpg" },
       "2017": { top: "/gallery/2017.jpg", bottom: "/gallery/2017%20(2).JPG" },
@@ -108,11 +168,17 @@ export function YearScroll() {
       "2026": { top: "/gallery/2026.jpg", bottom: "/gallery/2026%20(2).jpg" },
     }
 
-    return Object.entries(byYear).map(([year, src]) => ({
-      year,
-      topImageSrc: src.top,
-      bottomImageSrc: src.bottom,
-    }))
+    return Object.entries(byYear).map(([year, src]) => {
+      if (year === "2026") {
+        return { kind: "invitation", year }
+      }
+      return {
+        kind: "images",
+        year,
+        topImageSrc: src.top,
+        bottomImageSrc: src.bottom,
+      }
+    })
   }, [])
 
   const [index, setIndex] = useState(0)
