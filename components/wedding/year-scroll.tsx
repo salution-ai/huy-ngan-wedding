@@ -1,5 +1,6 @@
 "use client"
 
+import type { ReactNode } from "react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import {
   AnimatePresence,
@@ -8,11 +9,19 @@ import {
 } from "framer-motion"
 import { ScrollDownHint } from "@/components/wedding/scroll-down-hint"
 
-type YearSlide = {
+type ImagesSlide = {
+  kind: "images"
   year: string
   topImageSrc: string
   bottomImageSrc: string
 }
+
+type FinalSlide = {
+  kind: "final"
+  year: "2026"
+}
+
+type YearSlide = ImagesSlide | FinalSlide
 
 function preloadImage(src: string): Promise<void> {
   return new Promise((resolve) => {
@@ -25,12 +34,11 @@ function preloadImage(src: string): Promise<void> {
   })
 }
 
-function YearFrame({ slide }: { slide: YearSlide }) {
+function YearImageFrame({ slide }: { slide: ImagesSlide }) {
   const overlapPct = 12
   return (
     <div className="relative h-screen w-full">
       <div className="relative h-screen w-full overflow-hidden bg-neutral-950">
-        {/* Top image (fade out at bottom) */}
         <div
           className="absolute left-0 top-0 w-full"
           style={{ height: `${50 + overlapPct / 2}%` }}
@@ -51,7 +59,6 @@ function YearFrame({ slide }: { slide: YearSlide }) {
           />
         </div>
 
-        {/* Bottom image (fade out at top) */}
         <div
           className="absolute bottom-0 left-0 w-full"
           style={{ height: `${50 + overlapPct / 2}%` }}
@@ -75,7 +82,6 @@ function YearFrame({ slide }: { slide: YearSlide }) {
         <div className="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-t from-black to-transparent" />
       </div>
 
-      {/* Old-film warm overlay (only in YearScroll) */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
@@ -104,15 +110,95 @@ function YearFrame({ slide }: { slide: YearSlide }) {
   )
 }
 
-export function YearScroll() {
+function Year2026Hero() {
+  return (
+    <div className="relative min-h-screen w-full bg-[#faf7f2] py-8 font-wedding-serif text-[#b22f2f]">
+      <div
+        className="pointer-events-none absolute inset-0 bg-[url('/gallery/hero.JPG')] bg-cover bg-center opacity-[0.32]"
+        aria-hidden
+      />
+      <div className="flex justify-center items-center">
+        <img src="/objects/ChuHy.png" alt="Chữ Hỷ" className="w-[25%] h-full object-cover" />
+      </div>
+      <div className="flex flex-row items-center justify-center gap-6 px-4">
+        <div className="flex flex-1 flex-col items-center gap-1 text-center">
+          <p>Ông bà</p>
+          <p className="font-bold">LÊ HỮU MINH</p>
+          <p className="font-bold">ĐÀO THỊ MINH</p>
+          {/* <p className="text-stone-900">339 Hoàng Quốc Việt, phường Vũ Ninh, tỉnh Bắc Ninh</p> */}
+        </div>
+        <div
+          className="h-16 w-px shrink-0 bg-[#b22f2f]/40"
+          aria-hidden
+        />
+        <div className="flex flex-1 flex-col items-center gap-1 text-center">
+          <p>Ông bà</p>
+          <p className="font-bold">NGUYỄN VĂN QUY</p>
+          <p className="font-bold">ĐẶNG HẰNG MÂY</p>
+          {/* <p className="text-stone-900">10 - CN4, Cụm công nghiệp và dịch vụ làng nghề Khúc Xuyên, Phường Kinh Bắc, Tỉnh Bắc Ninh</p> */}
+        </div>
+      </div>
+      <div className="flex flex-col items-center justify-center gap-0 font-bold text-xl">
+        <div>
+          TRÂN TRỌNG BÁO TIN
+        </div>
+        <div>LỄ THÀNH HÔN CỦA CON CHÚNG TÔI</div>
+      </div>
+      {/* <div
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#faf7f2]/90 via-[#faf7f2] to-[#faf7f2]"
+        aria-hidden
+      /> */}
+    </div>
+  )
+}
+
+function YearDigits({
+  yearSuffix,
+  variant,
+}: {
+  yearSuffix: string
+  variant: "onPhoto" | "onPaper"
+}) {
+  const tone =
+    variant === "onPhoto"
+      ? "text-white drop-shadow-[0_10px_35px_rgba(0,0,0,0.65)]"
+      : "text-stone-800 drop-shadow-[0_2px_24px_rgba(255,255,255,0.95)]"
+
+  return (
+    <span
+      className={`pointer-events-none inline-flex items-center whitespace-nowrap text-8xl font-black leading-none [font-variant-numeric:tabular-nums] ${tone}`}
+    >
+      <span className="leading-none">20</span>
+      <span className="relative inline-grid h-[1em] w-[2ch] place-items-center overflow-hidden align-middle leading-none">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span
+            key={yearSuffix}
+            initial={{ y: 28, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -28, opacity: 0 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            className="absolute inset-0 grid place-items-center leading-none"
+          >
+            {yearSuffix}
+          </motion.span>
+        </AnimatePresence>
+      </span>
+    </span>
+  )
+}
+
+export type YearScrollProps = {
+  /** Nội dung thiệp / block thường — chỉ hiện ở màn 2026, cuộn trang bình thường. */
+  year2026Content?: ReactNode
+}
+
+export function YearScroll({ year2026Content }: YearScrollProps) {
   const ref = useRef<HTMLDivElement | null>(null)
   const touchStartYRef = useRef<number | null>(null)
   const wheelAccumRef = useRef(0)
   const lockRef = useRef(false)
 
   const slides = useMemo<YearSlide[]>(() => {
-    // NOTE: Hiện repo chỉ có 3 ảnh trong /public/gallery.
-    // Bạn có thể thay src từng năm sau, logic scroll sẽ tự chạy 2016→2026.
     const byYear: Record<string, { top: string; bottom: string }> = {
       "2016": { top: "/gallery/2016.jpg", bottom: "/gallery/2016%20(2).jpg" },
       "2017": { top: "/gallery/2017.jpg", bottom: "/gallery/2017%20(2).JPG" },
@@ -124,25 +210,33 @@ export function YearScroll() {
       "2023": { top: "/gallery/2023.jpg", bottom: "/gallery/2023%20(2).jpg" },
       "2024": { top: "/gallery/2024.jpg", bottom: "/gallery/2024%20(2).JPG" },
       "2025": { top: "/gallery/2025.JPG", bottom: "/gallery/2025%20(2).JPG" },
-      "2026": { top: "/gallery/2026.jpg", bottom: "/gallery/2026%20(2).jpg" },
     }
 
-    return Object.entries(byYear).map(([year, src]) => ({
+    const imageSlides: ImagesSlide[] = Object.entries(byYear).map(([year, src]) => ({
+      kind: "images",
       year,
       topImageSrc: src.top,
       bottomImageSrc: src.bottom,
     }))
+
+    const final: FinalSlide = { kind: "final", year: "2026" }
+    return [...imageSlides, final]
   }, [])
 
   const [index, setIndex] = useState(0)
-  const currentYear = slides[index]?.year ?? "2016"
-  const yearSuffix = currentYear.slice(2) // "2016" -> "16"
+  const slide = slides[index] ?? slides[0]
+  const currentYear = slide.year
+  const yearSuffix = currentYear.slice(2)
   const maxIndex = slides.length - 1
+  const isFinalYear = slide.kind === "final"
 
-  // Preload every year image once so switching years doesn't flash empty canvas.
   useEffect(() => {
     const urls = Array.from(
-      new Set(slides.flatMap((s) => [s.topImageSrc, s.bottomImageSrc])),
+      new Set(
+        slides.flatMap((s) =>
+          s.kind === "images" ? [s.topImageSrc, s.bottomImageSrc] : [],
+        ),
+      ),
     )
     void Promise.all(urls.map(preloadImage))
   }, [slides])
@@ -171,13 +265,19 @@ export function YearScroll() {
         return
       }
 
-      // Prevent page from scrolling while YearScroll can handle this direction,
-      // even before we reach the threshold to change the year.
+      if (index === maxIndex && e.deltaY > 0) {
+        wheelAccumRef.current = 0
+        return
+      }
+      if (index === 0 && e.deltaY < 0) {
+        wheelAccumRef.current = 0
+        return
+      }
+
       if ((e.deltaY > 0 && index < maxIndex) || (e.deltaY < 0 && index > 0)) {
         e.preventDefault()
       }
 
-      // Reset accumulation when direction changes.
       if (wheelAccumRef.current !== 0 && Math.sign(wheelAccumRef.current) !== Math.sign(e.deltaY)) {
         wheelAccumRef.current = 0
       }
@@ -186,14 +286,12 @@ export function YearScroll() {
       const threshold = 60
 
       if (wheelAccumRef.current > threshold) {
-        // Scroll down => next year (unless already at last)
         if (index < maxIndex) {
           step(1)
         } else {
           wheelAccumRef.current = 0
         }
       } else if (wheelAccumRef.current < -threshold) {
-        // Scroll up => previous year (unless already at first)
         if (index > 0) {
           step(-1)
         } else {
@@ -207,7 +305,6 @@ export function YearScroll() {
     }
 
     const onTouchMove = (e: TouchEvent) => {
-      // While we can still change years, prevent the page from scrolling.
       if (lockRef.current) {
         e.preventDefault()
         return
@@ -216,11 +313,9 @@ export function YearScroll() {
       if (startY == null) return
       const curY = e.touches[0]?.clientY
       if (curY == null) return
-      const dy = startY - curY // swipe up => positive (scroll down)
+      const dy = startY - curY
       const threshold = 40
 
-      // Prevent page from scrolling while YearScroll can handle this direction,
-      // even before we reach the threshold to change the year.
       if ((dy > 0 && index < maxIndex) || (dy < 0 && index > 0)) {
         e.preventDefault()
       }
@@ -245,16 +340,20 @@ export function YearScroll() {
     }
   }, [index, maxIndex])
 
+  const inYearStepMode = index > 0 && index < maxIndex
+
   return (
     <MotionConfig reducedMotion="user">
       <div
         ref={ref}
-        className="relative h-screen w-full overflow-hidden"
+        className={
+          isFinalYear
+            ? "relative min-h-screen w-full overflow-x-hidden overflow-y-visible"
+            : "relative h-screen w-full overflow-hidden"
+        }
         style={{
-          // Allow leaving the YearScroll when at boundaries.
-          // Lock touch panning only while we can step between years.
-          touchAction: index > 0 && index < maxIndex ? "none" : "pan-y",
-          overscrollBehavior: index > 0 && index < maxIndex ? "contain" : "auto",
+          touchAction: inYearStepMode ? "none" : "pan-y",
+          overscrollBehavior: inYearStepMode ? "contain" : "auto",
         }}
       >
         <AnimatePresence mode="wait" initial={false}>
@@ -264,31 +363,41 @@ export function YearScroll() {
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, scale: 0.99, filter: "blur(2px)" }}
             transition={{ duration: 0.45, ease: "easeOut" }}
-            className="absolute inset-0"
+            className={
+              isFinalYear ? "relative w-full" : "absolute inset-0"
+            }
           >
-            <YearFrame slide={slides[index] ?? slides[0]} />
+            {slide.kind === "images" ? (
+              <YearImageFrame slide={slide} />
+            ) : (
+              <>
+                <div className="relative min-h-screen w-full">
+                  <Year2026Hero />
+                </div>
+                {year2026Content != null && year2026Content !== false ? (
+                  <div className="relative z-10 w-full bg-[#faf7f2] px-4 pb-20 pt-2 md:px-6">
+                    {year2026Content}
+                  </div>
+                ) : null}
+              </>
+            )}
           </motion.div>
         </AnimatePresence>
 
-        <span className="pointer-events-none absolute left-1/2 top-1/2 inline-flex -translate-x-1/2 -translate-y-1/2 items-center whitespace-nowrap text-8xl font-black leading-none text-white drop-shadow-[0_10px_35px_rgba(0,0,0,0.65)] [font-variant-numeric:tabular-nums]">
-          <span className="leading-none">20</span>
-          <span className="relative inline-grid h-[1em] w-[2ch] place-items-center overflow-hidden align-middle leading-none">
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.span
-                key={yearSuffix}
-                initial={{ y: 28, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -28, opacity: 0 }}
-                transition={{ duration: 0.35, ease: "easeOut" }}
-                className="absolute inset-0 grid place-items-center leading-none"
-              >
-                {yearSuffix}
-              </motion.span>
-            </AnimatePresence>
-          </span>
-        </span>
+        {/* Tách khỏi motion key={currentYear} để AnimatePresence số năm chạy exit/enter (vd. 23 → 24). */}
+        <div
+          className={
+            isFinalYear
+              ? "pointer-events-none absolute left-0 right-0 top-0 z-20 flex h-screen items-center justify-center"
+              : "pointer-events-none absolute inset-0 z-20 flex items-center justify-center"
+          }
+        >
+          <YearDigits
+            variant={isFinalYear ? "onPaper" : "onPhoto"}
+            yearSuffix={yearSuffix}
+          />
+        </div>
       </div>
     </MotionConfig>
   )
 }
-

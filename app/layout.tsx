@@ -1,13 +1,9 @@
 import type React from "react"
 import type { Metadata } from "next/dist/lib/metadata/types/metadata-interface"
-import { Playwrite_IE, Audiowide, Cormorant_Garamond } from "next/font/google"
+import { Audiowide, Cormorant_Garamond } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import LayoutShell from "@/components/layout-shell"
-
-const playwriteIE = Playwrite_IE({
-  variable: "--font-playwrite-ie",
-})
 
 const audiowide = Audiowide({
   weight: ["400"],
@@ -35,7 +31,7 @@ export default function RootLayout({
     <html
       lang="vi"
       suppressHydrationWarning
-      className={`${audiowide.variable} ${cormorant.variable} ${playwriteIE.className} scroll-smooth`}
+      className={`${audiowide.variable} ${cormorant.variable} font-wedding-serif scroll-smooth`}
     >
       <head>
       </head>

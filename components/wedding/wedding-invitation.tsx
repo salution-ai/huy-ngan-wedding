@@ -9,7 +9,7 @@ import {
   FloralCornerBL,
   FloralCornerTR,
 } from "@/components/wedding/decorative";
-import { Archivo_Black } from "next/font/google";
+import { Archivo_Black, Playwrite_IE } from "next/font/google";
 import { ScrollDownHint } from "@/components/wedding/scroll-down-hint";
 import { YearScroll } from "@/components/wedding/year-scroll";
 
@@ -18,6 +18,10 @@ const archivoBlack = Archivo_Black({
   subsets: ["latin"],
   variable: "--font-archivo-black",
 });
+
+const playwriteIE = Playwrite_IE({
+  variable: "--font-playwrite-ie",
+})
 
 const {
   couple,
@@ -57,13 +61,13 @@ export function WeddingInvitation() {
             <div className="flex flex-col items-center justify-center gap-3">
               <p className="text-2xl font-bold">
                 <span className="font-wedding-serif">Kính gửi:</span>{" "}
-                {guest.title} {guest.name}
+                <span className={`${playwriteIE.className}`}>{guest.title} {guest.name}</span>
               </p>
-              <p className="text-2xl font-bold font-wedding-serif">
+              <p className="text-2xl font-bold">
                 Đây là thiệp cưới của
               </p>
-              <p className="text-2xl font-bold">Thúy Ngân và Đức Huy</p>
-              <p className="text-lg font-wedding-serif">
+              <p className={`text-2xl font-bold ${playwriteIE.className}`}>Thúy Ngân và Đức Huy</p>
+              <p className="text-lg">
                 {guest.title} hãy kéo xuống để mở nó ra nhé
               </p>
             </div>
@@ -85,7 +89,11 @@ export function WeddingInvitation() {
           id="year-scroll"
           className={`font-archivo-black ${archivoBlack.className}`}
         >
-          <YearScroll />
+          <YearScroll
+            year2026Content={
+              <div className="container-custom mx-auto max-w-3xl" />
+            }
+          />
         </div>
       </div>
 
