@@ -14,11 +14,22 @@ type YearSlide = {
   bottomImageSrc: string
 }
 
+function preloadImage(src: string): Promise<void> {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      img.decode?.().then(resolve).catch(() => resolve())
+    }
+    img.onerror = () => resolve()
+    img.src = src
+  })
+}
+
 function YearFrame({ slide }: { slide: YearSlide }) {
   const overlapPct = 12
   return (
     <div className="relative h-screen w-full">
-      <div className="relative h-screen w-full overflow-hidden">
+      <div className="relative h-screen w-full overflow-hidden bg-neutral-950">
         {/* Top image (fade out at bottom) */}
         <div
           className="absolute left-0 top-0 w-full"
@@ -28,6 +39,9 @@ function YearFrame({ slide }: { slide: YearSlide }) {
             src={slide.topImageSrc}
             alt="Huy Ngân Wedding"
             className="h-full w-full object-cover"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
             style={{
               WebkitMaskImage:
                 "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)",
@@ -46,6 +60,9 @@ function YearFrame({ slide }: { slide: YearSlide }) {
             src={slide.bottomImageSrc}
             alt="Huy Ngân Wedding"
             className="h-full w-full object-cover"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
             style={{
               WebkitMaskImage:
                 "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)",
@@ -121,6 +138,14 @@ export function YearScroll() {
   const currentYear = slides[index]?.year ?? "2016"
   const yearSuffix = currentYear.slice(2) // "2016" -> "16"
   const maxIndex = slides.length - 1
+
+  // Preload every year image once so switching years doesn't flash empty canvas.
+  useEffect(() => {
+    const urls = Array.from(
+      new Set(slides.flatMap((s) => [s.topImageSrc, s.bottomImageSrc])),
+    )
+    void Promise.all(urls.map(preloadImage))
+  }, [slides])
 
   useEffect(() => {
     const el = ref.current
