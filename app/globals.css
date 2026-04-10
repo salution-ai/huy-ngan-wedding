@@ -212,3 +212,18 @@
     background-position-x: -500px;
   }
 }
+
+@keyframes invite-open-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.07);
+  }
+}
+
+.invite-open-btn-pulse {
+  animation: invite-open-pulse 2.2s ease-in-out infinite;
+  transform-origin: center;
+}

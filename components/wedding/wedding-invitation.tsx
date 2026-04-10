@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Clock, Phone } from "lucide-react";
+import { MapPin, Clock, Phone, ArrowDown, MailOpen } from "lucide-react";
 import { weddingContent } from "@/content/wedding";
 import { InviteCountdown } from "@/components/wedding/invite-countdown";
 import {
@@ -67,10 +67,24 @@ export function WeddingInvitation() {
                 {guest.title} hãy kéo xuống để mở nó ra nhé
               </p>
             </div>
+            <div className="flex justify-center items-center">
+              <a
+                href="#year-scroll"
+                className="invite-open-btn-pulse inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-white border border-white shadow-md transition-shadow hover:shadow-lg"
+              >
+                <span className="flex items-center gap-3 font-wedding-serif font-bold text-lg">
+                  <MailOpen className="h-6 w-6" />
+                  Mở thiệp
+                </span>
+              </a>
+            </div>
             <ScrollDownHint />
           </div>
         </div>
-        <div className={`font-archivo-black ${archivoBlack.className}`}>
+        <div
+          id="year-scroll"
+          className={`font-archivo-black ${archivoBlack.className}`}
+        >
           <YearScroll />
         </div>
       </div>
