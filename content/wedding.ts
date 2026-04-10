@@ -1,0 +1,111 @@
+/**
+ * Chỉnh toàn bộ nội dung thiệp cưới tại đây — thay bằng thông tin thật khi chuẩn bị xong.
+ */
+
+export const weddingContent = {
+  couple: {
+    /** Tên hiển thị (có dấu) */
+    groomFirstName: "Huy",
+    brideFirstName: "Ngân",
+    groomFullName: "Đức Huy",
+    brideFullName: "Thu Ngân",
+    /** Dòng họ nhà trai / nhà gái — có thể xóa hoặc sửa */
+    groomParentsLine: "Nhà trai: Ông … & Bà …",
+    brideParentsLine: "Nhà gái: Ông … & Bà …",
+  },
+
+  /** Câu mở đầu / quote */
+  invitationIntro:
+    "Chúng con xin trân trọng kính mời Quý ông bà, anh chị em và bạn bè đến dự buổi lễ thành hôn của chúng con.",
+
+  /** Ngày giờ tổng (hiển thị dương lịch + gợi ý âm lịch) */
+  date: {
+    weekdayAndDate: "Chủ nhật, 09 tháng 11 năm 2026",
+    lunarHint: "(Âm lịch: … / … / Bính Ngọ)",
+    /** ISO 8601 — dùng cho đếm ngược; đổi khi có ngày chính thức */
+    countdownIso: "2026-11-09T10:00:00+07:00",
+  },
+
+  /** Các sự kiện trong ngày — thêm/bớt object trong mảng nếu cần */
+  events: [
+    {
+      id: "vu-quy",
+      label: "Lễ vu quy",
+      time: "09:30",
+      dateShort: "09.11.2026",
+      venueName: "Tư gia nhà gái",
+      address: "Số nhà …, Đường …, Phường …, Tỉnh/Thành phố …",
+      mapUrl: "https://maps.google.com/?q=10.7769,106.7009",
+      note: "Kính mời đến đúng giờ để chung vui cùng gia đình.",
+    },
+    {
+      id: "tiec",
+      label: "Tiệc cưới",
+      time: "11:00",
+      dateShort: "09.11.2026",
+      venueName: "Trung tâm tiệc cưới …",
+      address: "Số nhà …, Đường …, Phường …, Tỉnh/Thành phố …",
+      mapUrl: "https://maps.google.com/?q=10.7769,106.7009",
+      note: "Sảnh … — Kính mời quý khách tham dự chương trình.",
+    },
+  ],
+
+  /** Timeline trong buổi tiệc (tùy chọn) */
+  timeline: [
+    { time: "11:00", title: "Đón khách", detail: "Check-in & chụp ảnh lưu niệm" },
+    { time: "11:30", title: "Khai tiệc", detail: "Nghi thức cắt bánh & nâng ly" },
+    { time: "12:00", title: "Giao lưu", detail: "Văn nghệ & chúc mừng" },
+    { time: "13:30", title: "Kết thúc", detail: "Cảm ơn quý khách" },
+  ],
+
+  dressCode: {
+    title: "Dress code",
+    hint: "Pastel / Tông ấm / Áo dài — tránh đỏ burgundy trùng hoa cô dâu.",
+  },
+
+  /** Ảnh gallery — thay src bằng ảnh của bạn (Cloudinary hoặc /public/...) */
+  gallery: {
+    coverSrc: "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80",
+    coverAlt: "Ảnh bìa thiệp — thay bằng ảnh cưới của bạn",
+    items: [
+      {
+        src: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=800&q=80",
+        alt: "Khoảnh khắc 1",
+      },
+      {
+        src: "https://images.unsplash.com/photo-1465495976277-4387d4b0b58c?w=800&q=80",
+        alt: "Khoảnh khắc 2",
+      },
+      {
+        src: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80",
+        alt: "Khoảnh khắc 3",
+      },
+      {
+        src: "https://images.unsplash.com/photo-1529636799528-93f6e06b7e5b?w=800&q=80",
+        alt: "Khoảnh khắc 4",
+      },
+      {
+        src: "https://images.unsplash.com/photo-1522413452209-7cbf37653562?w=800&q=80",
+        alt: "Khoảnh khắc 5",
+      },
+      {
+        src: "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=800&q=80",
+        alt: "Khoảnh khắc 6",
+      },
+    ],
+  },
+
+  /** Liên hệ khẩn — thay SĐT / Zalo */
+  contact: {
+    groomPhone: "+84 …",
+    bridePhone: "+84 …",
+    zaloLink: "https://zalo.me/",
+  },
+
+  closingLine: "Sự hiện diện của quý khách là niềm vinh hạnh của gia đình chúng con.",
+
+  /** Gợi ý: iframe Google Maps — dán src embed khi có; để trống thì chỉ hiện nút mở Maps */
+  mapEmbedUrl: "" as string,
+}
+
+export type WeddingContent = typeof weddingContent
