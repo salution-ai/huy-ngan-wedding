@@ -8,7 +8,7 @@ export const weddingContent = {
     groomFirstName: "Huy",
     brideFirstName: "Ngân",
     groomFullName: "Đức Huy",
-    brideFullName: "Thu Ngân",
+    brideFullName: "Thúy Ngân",
     /** Dòng họ nhà trai / nhà gái — có thể xóa hoặc sửa */
     groomParentsLine: "Nhà trai: Ông … & Bà …",
     brideParentsLine: "Nhà gái: Ông … & Bà …",
@@ -52,10 +52,10 @@ export const weddingContent = {
 
   /** Timeline trong buổi tiệc (tùy chọn) */
   timeline: [
-    { time: "11:00", title: "Đón khách", detail: "Check-in & chụp ảnh lưu niệm" },
-    { time: "11:30", title: "Khai tiệc", detail: "Nghi thức cắt bánh & nâng ly" },
-    { time: "12:00", title: "Giao lưu", detail: "Văn nghệ & chúc mừng" },
-    { time: "13:30", title: "Kết thúc", detail: "Cảm ơn quý khách" },
+    { time: "09:00", title: "Đón khách", detail: "Check-in & chụp ảnh lưu niệm" },
+    { time: "10:00", title: "Bữa cơm thân mật", detail: "Bữa cơm thân mật với gia đình" },
+    { time: "13:30", title: "Lễ Vu Quy", detail: "Làm lễ tại nhà gái" },
+    { time: "15:30", title: "Lễ Thành Hôn", detail: "Làm lễ tại nhà trai" },
   ],
 
   dressCode: {

@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, MotionConfig } from "framer-motion";
 import { ScrollDownHint } from "@/components/wedding/scroll-down-hint";
 import { weddingContent } from "@/content/wedding";
-import { Archivo_Black, Playwrite_IE, Roboto_Slab } from "next/font/google";
+import { Playwrite_IE, Roboto_Slab } from "next/font/google";
 
 type ImagesSlide = {
   kind: "images";
@@ -163,12 +163,12 @@ function Year2026Hero() {
         <div>Nguyễn Thúy Ngân</div>
       </div>
       <div className={`flex flex-col items-center justify-center gap-0 font-bold text-xl py-2 ${robotoSlab.className} gap-2`}>
-        <div className="font-light text-lg">Hôn lễ được cử hành tại Nhà văn hóa khu 4</div>
+        <div className="font-normal text-lg">Hôn lễ được cử hành tại Nhà văn hóa khu 4</div>
         <div>VÀO LÚC 10 GIỜ 00, THỨ BẢY</div>
-        <div className="border-y-3 border-[#b22f2f]/40 px-8 py-2">
+        <div className="border-y-3 border-[#b22f2f]/40 px-8 py-2 text-3xl">
           02.05.2026
         </div>
-        <div>(Nhằm ngày 16 tháng 3 năm Bính Ngọ)</div>
+        <div className="text-lg font-normal">(Nhằm ngày 16 tháng 3 năm Bính Ngọ)</div>
         <div className="mt-4 w-[80%] max-w-lg px-4">
           {weddingContent.receptionMapEmbedUrl ? (
             <div className="aspect-[5/3] w-full overflow-hidden rounded-lg border border-[#b22f2f]/30 bg-stone-100 shadow-sm">
@@ -441,11 +441,11 @@ export function YearScroll({ year2026Content }: YearScrollProps) {
                 <div className="relative min-h-screen w-full">
                   <Year2026Hero />
                 </div>
-                {year2026Content != null && year2026Content !== false ? (
+                {/* {year2026Content != null && year2026Content !== false ? (
                   <div className="relative z-10 w-full bg-[#faf7f2] px-4 pb-20 pt-2 md:px-6">
                     {year2026Content}
                   </div>
-                ) : null}
+                ) : null} */}
               </>
             )}
           </motion.div>
