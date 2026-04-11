@@ -1,41 +1,49 @@
-"use client"
+"use client";
 
-import type { ReactNode } from "react"
-import { useEffect, useMemo, useRef, useState } from "react"
-import {
-  AnimatePresence,
-  motion,
-  MotionConfig,
-} from "framer-motion"
-import { ScrollDownHint } from "@/components/wedding/scroll-down-hint"
+import type { ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion, MotionConfig } from "framer-motion";
+import { ScrollDownHint } from "@/components/wedding/scroll-down-hint";
+import { weddingContent } from "@/content/wedding";
+import { Playwrite_IE } from "next/font/google";
 
 type ImagesSlide = {
-  kind: "images"
-  year: string
-  topImageSrc: string
-  bottomImageSrc: string
-}
+  kind: "images";
+  year: string;
+  topImageSrc: string;
+  bottomImageSrc: string;
+};
 
 type FinalSlide = {
-  kind: "final"
-  year: "2026"
-}
+  kind: "final";
+  year: "2026";
+};
 
-type YearSlide = ImagesSlide | FinalSlide
+const playwrightIE = Playwrite_IE({
+  variable: "--font-playwrite-ie",
+});
+
+type YearSlide = ImagesSlide | FinalSlide;
+
+/** Thời gian hiển thị đầy đủ số năm 2026 trước khi bắt đầu mờ (ms). */
+const FINAL_YEAR_DIGITS_VISIBLE_MS = 1500;
 
 function preloadImage(src: string): Promise<void> {
   return new Promise((resolve) => {
-    const img = new Image()
+    const img = new Image();
     img.onload = () => {
-      img.decode?.().then(resolve).catch(() => resolve())
-    }
-    img.onerror = () => resolve()
-    img.src = src
-  })
+      img
+        .decode?.()
+        .then(resolve)
+        .catch(() => resolve());
+    };
+    img.onerror = () => resolve();
+    img.src = src;
+  });
 }
 
 function YearImageFrame({ slide }: { slide: ImagesSlide }) {
-  const overlapPct = 12
+  const overlapPct = 12;
   return (
     <div className="relative h-screen w-full">
       <div className="relative h-screen w-full overflow-hidden bg-neutral-950">
@@ -107,62 +115,97 @@ function YearImageFrame({ slide }: { slide: ImagesSlide }) {
         <ScrollDownHint />
       </div>
     </div>
-  )
+  );
 }
 
 function Year2026Hero() {
   return (
-    <div className="relative min-h-screen w-full bg-[#faf7f2] py-8 font-wedding-serif text-[#b22f2f]">
+    <div className="relative min-h-screen w-full bg-[#faf7f2] py-8 font-wedding-serif text-[#b22f2f] flex flex-col items-center justify-between">
       <div
         className="pointer-events-none absolute inset-0 bg-[url('/gallery/hero.JPG')] bg-cover bg-center opacity-[0.32]"
         aria-hidden
       />
       <div className="flex justify-center items-center">
-        <img src="/objects/ChuHy.png" alt="Chữ Hỷ" className="w-[25%] h-full object-cover" />
+        <img
+          src="/objects/ChuHy.png"
+          alt="Chữ Hỷ"
+          className="w-[25%] h-full object-cover"
+        />
       </div>
-      <div className="flex flex-row items-center justify-center gap-6 px-4">
+      <div className="flex flex-row items-center justify-center gap-6 px-4 w-full">
         <div className="flex flex-1 flex-col items-center gap-1 text-center">
           <p>Ông bà</p>
           <p className="font-bold">LÊ HỮU MINH</p>
           <p className="font-bold">ĐÀO THỊ MINH</p>
-          {/* <p className="text-stone-900">339 Hoàng Quốc Việt, phường Vũ Ninh, tỉnh Bắc Ninh</p> */}
+          {/* <p className="text-stone-900">339 Hoàng Quốc Việt, P. Vũ Ninh, Bắc Ninh</p> */}
         </div>
-        <div
-          className="h-16 w-px shrink-0 bg-[#b22f2f]/40"
-          aria-hidden
-        />
+        <div className="h-16 w-px shrink-0 bg-[#b22f2f]/40" aria-hidden />
         <div className="flex flex-1 flex-col items-center gap-1 text-center">
           <p>Ông bà</p>
           <p className="font-bold">NGUYỄN VĂN QUY</p>
           <p className="font-bold">ĐẶNG HẰNG MÂY</p>
-          {/* <p className="text-stone-900">10 - CN4, Cụm công nghiệp và dịch vụ làng nghề Khúc Xuyên, Phường Kinh Bắc, Tỉnh Bắc Ninh</p> */}
+          {/* <p className="text-stone-900">10 - CN4, Cụm công nghiệp và dịch vụ làng nghề Khúc Xuyên, P. Kinh Bắc, Bắc Ninh</p> */}
         </div>
       </div>
-      <div className="flex flex-col items-center justify-center gap-0 font-bold text-xl">
-        <div>
-          TRÂN TRỌNG BÁO TIN
-        </div>
+      <div className="flex flex-col items-center justify-center gap-0 font-bold text-xl py-2">
+        <div>TRÂN TRỌNG BÁO TIN</div>
         <div>LỄ THÀNH HÔN CỦA CON CHÚNG TÔI</div>
+      </div>
+      <div className={`flex flex-col items-center justify-center gap-3 font-bold text-3xl py-2 ${playwrightIE.className}`}>
+        <div>Lê Đức Huy</div>
+        <div>&</div>
+        <div>Nguyễn Thúy Ngân</div>
+      </div>
+      <div className="flex flex-col items-center justify-center gap-0 font-bold text-xl py-2">
+        <div>Hôn lễ được cử hành tại nhà trai Nhà văn hóa khu 4</div>
+        <div>VÀO LÚC 10 GIỜ 00, THỨ BẢY</div>
+        <div className="border-y-3 border-[#b22f2f]/40 px-8 py-2">
+          02.05.2026
+        </div>
+        <div>(Nhằm ngày 16 tháng 3 năm Bính Ngọ)</div>
+        <div className="mt-4 w-[80%] max-w-lg px-4">
+          {weddingContent.receptionMapEmbedUrl ? (
+            <div className="aspect-[4/3] w-full overflow-hidden rounded-lg border border-[#b22f2f]/30 bg-stone-100 shadow-sm">
+              <iframe
+                title="Bản đồ địa điểm hôn lễ"
+                src={weddingContent.receptionMapEmbedUrl}
+                className="h-full w-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+              {/* <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3719.942979708695!2d106.09018461184922!3d21.194423980415372!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31350c418fd79151%3A0xf759391b2c7844a7!2zTmjDoCB2xINuIGhvw6Ega2h1IHBo4buRIDQgVGjhu4sgQ-G6p3U!5e0!3m2!1svi!2s!4v1775882036991!5m2!1svi!2s" width="600" height="450" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe> */}
+            </div>
+          ) : (
+            <p className="text-center text-xs leading-relaxed text-stone-600">
+              Thêm URL nhúng Google Maps vào{" "}
+              <code className="rounded bg-stone-200/80 px-1 py-0.5 font-mono text-[0.7rem] text-stone-800">
+                receptionMapEmbedUrl
+              </code>{" "}
+              trong <span className="font-mono text-[0.7rem]">content/wedding.ts</span>
+            </p>
+          )}
+        </div>
       </div>
       {/* <div
         className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#faf7f2]/90 via-[#faf7f2] to-[#faf7f2]"
         aria-hidden
       /> */}
     </div>
-  )
+  );
 }
 
 function YearDigits({
   yearSuffix,
   variant,
 }: {
-  yearSuffix: string
-  variant: "onPhoto" | "onPaper"
+  yearSuffix: string;
+  variant: "onPhoto" | "onPaper";
 }) {
   const tone =
     variant === "onPhoto"
       ? "text-white drop-shadow-[0_10px_35px_rgba(0,0,0,0.65)]"
-      : "text-stone-800 drop-shadow-[0_2px_24px_rgba(255,255,255,0.95)]"
+      : "text-stone-800 drop-shadow-[0_2px_24px_rgba(255,255,255,0.95)]";
 
   return (
     <span
@@ -184,19 +227,19 @@ function YearDigits({
         </AnimatePresence>
       </span>
     </span>
-  )
+  );
 }
 
 export type YearScrollProps = {
   /** Nội dung thiệp / block thường — chỉ hiện ở màn 2026, cuộn trang bình thường. */
-  year2026Content?: ReactNode
-}
+  year2026Content?: ReactNode;
+};
 
 export function YearScroll({ year2026Content }: YearScrollProps) {
-  const ref = useRef<HTMLDivElement | null>(null)
-  const touchStartYRef = useRef<number | null>(null)
-  const wheelAccumRef = useRef(0)
-  const lockRef = useRef(false)
+  const ref = useRef<HTMLDivElement | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+  const wheelAccumRef = useRef(0);
+  const lockRef = useRef(false);
 
   const slides = useMemo<YearSlide[]>(() => {
     const byYear: Record<string, { top: string; bottom: string }> = {
@@ -210,25 +253,27 @@ export function YearScroll({ year2026Content }: YearScrollProps) {
       "2023": { top: "/gallery/2023.jpg", bottom: "/gallery/2023%20(2).jpg" },
       "2024": { top: "/gallery/2024.jpg", bottom: "/gallery/2024%20(2).JPG" },
       "2025": { top: "/gallery/2025.JPG", bottom: "/gallery/2025%20(2).JPG" },
-    }
+    };
 
-    const imageSlides: ImagesSlide[] = Object.entries(byYear).map(([year, src]) => ({
-      kind: "images",
-      year,
-      topImageSrc: src.top,
-      bottomImageSrc: src.bottom,
-    }))
+    const imageSlides: ImagesSlide[] = Object.entries(byYear).map(
+      ([year, src]) => ({
+        kind: "images",
+        year,
+        topImageSrc: src.top,
+        bottomImageSrc: src.bottom,
+      }),
+    );
 
-    const final: FinalSlide = { kind: "final", year: "2026" }
-    return [...imageSlides, final]
-  }, [])
+    const final: FinalSlide = { kind: "final", year: "2026" };
+    return [...imageSlides, final];
+  }, []);
 
-  const [index, setIndex] = useState(0)
-  const slide = slides[index] ?? slides[0]
-  const currentYear = slide.year
-  const yearSuffix = currentYear.slice(2)
-  const maxIndex = slides.length - 1
-  const isFinalYear = slide.kind === "final"
+  const [index, setIndex] = useState(0);
+  const slide = slides[index] ?? slides[0];
+  const currentYear = slide.year;
+  const yearSuffix = currentYear.slice(2);
+  const maxIndex = slides.length - 1;
+  const isFinalYear = slide.kind === "final";
 
   useEffect(() => {
     const urls = Array.from(
@@ -237,110 +282,128 @@ export function YearScroll({ year2026Content }: YearScrollProps) {
           s.kind === "images" ? [s.topImageSrc, s.bottomImageSrc] : [],
         ),
       ),
-    )
-    void Promise.all(urls.map(preloadImage))
-  }, [slides])
+    );
+    void Promise.all(urls.map(preloadImage));
+  }, [slides]);
 
   useEffect(() => {
-    const el = ref.current
-    if (!el) return
+    const el = ref.current;
+    if (!el) return;
 
     const step = (dir: 1 | -1) => {
-      if (lockRef.current) return
+      if (lockRef.current) return;
       setIndex((prev) => {
-        const next = Math.max(0, Math.min(maxIndex, prev + dir))
-        if (next === prev) return prev
-        lockRef.current = true
+        const next = Math.max(0, Math.min(maxIndex, prev + dir));
+        if (next === prev) return prev;
+        lockRef.current = true;
         window.setTimeout(() => {
-          lockRef.current = false
-          wheelAccumRef.current = 0
-        }, 420)
-        return next
-      })
-    }
+          lockRef.current = false;
+          wheelAccumRef.current = 0;
+        }, 420);
+        return next;
+      });
+    };
 
     const onWheel = (e: WheelEvent) => {
       if (lockRef.current) {
-        e.preventDefault()
-        return
+        e.preventDefault();
+        return;
       }
 
       if (index === maxIndex && e.deltaY > 0) {
-        wheelAccumRef.current = 0
-        return
+        wheelAccumRef.current = 0;
+        return;
       }
       if (index === 0 && e.deltaY < 0) {
-        wheelAccumRef.current = 0
-        return
+        wheelAccumRef.current = 0;
+        return;
       }
 
       if ((e.deltaY > 0 && index < maxIndex) || (e.deltaY < 0 && index > 0)) {
-        e.preventDefault()
+        e.preventDefault();
       }
 
-      if (wheelAccumRef.current !== 0 && Math.sign(wheelAccumRef.current) !== Math.sign(e.deltaY)) {
-        wheelAccumRef.current = 0
+      if (
+        wheelAccumRef.current !== 0 &&
+        Math.sign(wheelAccumRef.current) !== Math.sign(e.deltaY)
+      ) {
+        wheelAccumRef.current = 0;
       }
 
-      wheelAccumRef.current += e.deltaY
-      const threshold = 60
+      wheelAccumRef.current += e.deltaY;
+      const threshold = 60;
 
       if (wheelAccumRef.current > threshold) {
         if (index < maxIndex) {
-          step(1)
+          step(1);
         } else {
-          wheelAccumRef.current = 0
+          wheelAccumRef.current = 0;
         }
       } else if (wheelAccumRef.current < -threshold) {
         if (index > 0) {
-          step(-1)
+          step(-1);
         } else {
-          wheelAccumRef.current = 0
+          wheelAccumRef.current = 0;
         }
       }
-    }
+    };
 
     const onTouchStart = (e: TouchEvent) => {
-      touchStartYRef.current = e.touches[0]?.clientY ?? null
-    }
+      touchStartYRef.current = e.touches[0]?.clientY ?? null;
+    };
 
     const onTouchMove = (e: TouchEvent) => {
       if (lockRef.current) {
-        e.preventDefault()
-        return
+        e.preventDefault();
+        return;
       }
-      const startY = touchStartYRef.current
-      if (startY == null) return
-      const curY = e.touches[0]?.clientY
-      if (curY == null) return
-      const dy = startY - curY
-      const threshold = 40
+      const startY = touchStartYRef.current;
+      if (startY == null) return;
+      const curY = e.touches[0]?.clientY;
+      if (curY == null) return;
+      const dy = startY - curY;
+      const threshold = 40;
 
       if ((dy > 0 && index < maxIndex) || (dy < 0 && index > 0)) {
-        e.preventDefault()
+        e.preventDefault();
       }
 
       if (dy > threshold && index < maxIndex) {
-        touchStartYRef.current = null
-        step(1)
+        touchStartYRef.current = null;
+        step(1);
       } else if (dy < -threshold && index > 0) {
-        touchStartYRef.current = null
-        step(-1)
+        touchStartYRef.current = null;
+        step(-1);
       }
-    }
+    };
 
-    el.addEventListener("wheel", onWheel, { passive: false })
-    el.addEventListener("touchstart", onTouchStart, { passive: true })
-    el.addEventListener("touchmove", onTouchMove, { passive: false })
+    el.addEventListener("wheel", onWheel, { passive: false });
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
 
     return () => {
-      el.removeEventListener("wheel", onWheel)
-      el.removeEventListener("touchstart", onTouchStart)
-      el.removeEventListener("touchmove", onTouchMove)
-    }
-  }, [index, maxIndex])
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+    };
+  }, [index, maxIndex]);
 
-  const inYearStepMode = index > 0 && index < maxIndex
+  const inYearStepMode = index > 0 && index < maxIndex;
+
+  /** Màn 2026: hiện số năm một lúc rồi mờ dần. */
+  const [finalYearDigitsOpacity, setFinalYearDigitsOpacity] = useState(1);
+
+  useEffect(() => {
+    if (!isFinalYear) {
+      setFinalYearDigitsOpacity(1);
+      return;
+    }
+    setFinalYearDigitsOpacity(1);
+    const t = window.setTimeout(() => {
+      setFinalYearDigitsOpacity(0);
+    }, FINAL_YEAR_DIGITS_VISIBLE_MS);
+    return () => window.clearTimeout(t);
+  }, [isFinalYear]);
 
   return (
     <MotionConfig reducedMotion="user">
@@ -363,9 +426,7 @@ export function YearScroll({ year2026Content }: YearScrollProps) {
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, scale: 0.99, filter: "blur(2px)" }}
             transition={{ duration: 0.45, ease: "easeOut" }}
-            className={
-              isFinalYear ? "relative w-full" : "absolute inset-0"
-            }
+            className={isFinalYear ? "relative w-full" : "absolute inset-0"}
           >
             {slide.kind === "images" ? (
               <YearImageFrame slide={slide} />
@@ -388,9 +449,11 @@ export function YearScroll({ year2026Content }: YearScrollProps) {
         <div
           className={
             isFinalYear
-              ? "pointer-events-none absolute left-0 right-0 top-0 z-20 flex h-screen items-center justify-center"
+              ? "pointer-events-none absolute left-0 right-0 top-0 z-20 flex h-screen items-center justify-center transition-opacity duration-[900ms] ease-out"
               : "pointer-events-none absolute inset-0 z-20 flex items-center justify-center"
           }
+          style={isFinalYear ? { opacity: finalYearDigitsOpacity } : undefined}
+          aria-hidden={isFinalYear && finalYearDigitsOpacity === 0}
         >
           <YearDigits
             variant={isFinalYear ? "onPaper" : "onPhoto"}
@@ -399,5 +462,5 @@ export function YearScroll({ year2026Content }: YearScrollProps) {
         </div>
       </div>
     </MotionConfig>
-  )
+  );
 }

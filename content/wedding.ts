@@ -106,6 +106,12 @@ export const weddingContent = {
 
   /** Gợi ý: iframe Google Maps — dán src embed khi có; để trống thì chỉ hiện nút mở Maps */
   mapEmbedUrl: "" as string,
+
+  /**
+   * Google Maps (nhúng iframe) — địa điểm cử hành hôn lễ (vd. Nhà văn hóa khu 4).
+   * Trên Google Maps: địa điểm → Chia sẻ → Nhúng bản đồ → copy URL trong src="..."
+   */
+  receptionMapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3719.942979708695!2d106.09018461184922!3d21.194423980415372!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31350c418fd79151%3A0xf759391b2c7844a7!2zTmjDoCB2xINuIGhvw6Ega2h1IHBo4buRIDQgVGjhu4sgQ-G6p3U!5e0!3m2!1svi!2s!4v1775882036991!5m2!1svi!2s" as string,
 }
 
 export type WeddingContent = typeof weddingContent
