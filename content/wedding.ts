@@ -120,8 +120,11 @@ export const weddingContent = {
     volume: 0.35,
   },
 
-  /** Gợi ý: iframe Google Maps — dán src embed khi có; để trống thì chỉ hiện nút mở Maps */
-  mapEmbedUrl: "" as string,
+  /**
+   * Google Maps (nhúng iframe) — địa điểm nhà gái (dùng khi khách thuộc side "bride").
+   * Trên Google Maps: địa điểm → Chia sẻ → Nhúng bản đồ → copy URL trong src="..."
+   */
+  mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3720.0481659652173!2d106.04595321184894!3d21.190245480418398!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31350f09e5fe0c27%3A0x52f702178ae54488!2zTmjDoCBWaW5oIEJp4bq_dCBCYXk!5e0!3m2!1svi!2s!4v1776266441711!5m2!1svi!2s" as string,
 
   /**
    * Google Maps (nhúng iframe) — địa điểm cử hành hôn lễ (vd. Nhà văn hóa khu 4).

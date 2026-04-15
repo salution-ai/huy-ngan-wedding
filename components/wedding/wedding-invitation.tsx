@@ -16,7 +16,6 @@ import {
   Playwrite_PE,
   Roboto_Slab,
 } from "next/font/google";
-import { EvasiveDeclineButton } from "@/components/wedding/evasive-decline-button";
 import { ScrollDownHint } from "@/components/wedding/scroll-down-hint";
 import { YearScroll } from "@/components/wedding/year-scroll";
 import { WishForm } from "@/components/wedding/wish-form";
@@ -37,7 +36,8 @@ export type WeddingGuest = {
   self: string;
   selfLow: string;
   grateful?: string;
-  join?: string;
+  side?: "" | "groom" | "bride";
+  join?: string | boolean;
   wish?: string;
   joinAt?: string;
   declineNum?: string;
@@ -156,6 +156,7 @@ export function WeddingInvitation({
           className={`font-archivo-black ${archivoBlack.className}`}
         >
           <YearScroll
+            side={guest.side}
             year2026Content={
               <div className="container-custom mx-auto max-w-3xl" />
             }

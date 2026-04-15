@@ -124,7 +124,7 @@ function YearImageFrame({ slide }: { slide: ImagesSlide }) {
   );
 }
 
-function Year2026Hero() {
+function Year2026Hero({ side }: { side?: "" | "groom" | "bride" }) {
   const container = {
     hidden: {},
     show: {
@@ -139,6 +139,30 @@ function Year2026Hero() {
     hidden: { opacity: 0, y: 10, filter: "blur(2px)" },
     show: { opacity: 1, y: 0, filter: "blur(0px)" },
   } as const;
+
+  const isBrideSide = side === "bride";
+
+  const groomParents = (
+    <div className="flex flex-1 flex-col items-center gap-1 text-center">
+      <p>Ông bà</p>
+      <p className="font-bold">LÊ HỮU MINH</p>
+      <p className="font-bold">ĐÀO THỊ MINH</p>
+      {/* <p className="text-stone-900">339 Hoàng Quốc Việt, P. Vũ Ninh, Bắc Ninh</p> */}
+    </div>
+  );
+
+  const brideParents = (
+    <div className="flex flex-1 flex-col items-center gap-1 text-center">
+      <p>Ông bà</p>
+      <p className="font-bold">NGUYỄN VĂN QUY</p>
+      <p className="font-bold">ĐẶNG HẰNG MÂY</p>
+      {/* <p className="text-stone-900">10 - CN4, Cụm công nghiệp và dịch vụ làng nghề Khúc Xuyên, P. Kinh Bắc, Bắc Ninh</p> */}
+    </div>
+  );
+
+  const mapEmbed = isBrideSide
+    ? weddingContent.mapEmbedUrl
+    : weddingContent.receptionMapEmbedUrl;
 
   return (
     <motion.div
@@ -168,19 +192,9 @@ function Year2026Hero() {
         transition={{ duration: 0.55, ease: "easeOut" }}
         className="flex flex-row items-center justify-center gap-6 px-4 w-full"
       >
-        <div className="flex flex-1 flex-col items-center gap-1 text-center">
-          <p>Ông bà</p>
-          <p className="font-bold">LÊ HỮU MINH</p>
-          <p className="font-bold">ĐÀO THỊ MINH</p>
-          {/* <p className="text-stone-900">339 Hoàng Quốc Việt, P. Vũ Ninh, Bắc Ninh</p> */}
-        </div>
+        {isBrideSide ? brideParents : groomParents}
         <div className="h-16 w-px shrink-0 bg-[#b22f2f]/40" aria-hidden />
-        <div className="flex flex-1 flex-col items-center gap-1 text-center">
-          <p>Ông bà</p>
-          <p className="font-bold">NGUYỄN VĂN QUY</p>
-          <p className="font-bold">ĐẶNG HẰNG MÂY</p>
-          {/* <p className="text-stone-900">10 - CN4, Cụm công nghiệp và dịch vụ làng nghề Khúc Xuyên, P. Kinh Bắc, Bắc Ninh</p> */}
-        </div>
+        {isBrideSide ? groomParents : brideParents}
       </motion.div>
 
       <motion.div
@@ -197,9 +211,19 @@ function Year2026Hero() {
         transition={{ duration: 0.55, ease: "easeOut" }}
         className={`flex flex-col items-center justify-center gap-3 font-bold text-3xl py-2 ${playwrightIE.className}`}
       >
-        <div>Lê Đức Huy</div>
-        <div>&</div>
-        <div>Nguyễn Thúy Ngân</div>
+        {isBrideSide ? (
+          <>
+            <div>Nguyễn Thúy Ngân</div>
+            <div>&</div>
+            <div>Lê Đức Huy</div>
+          </>
+        ) : (
+          <>
+            <div>Lê Đức Huy</div>
+            <div>&</div>
+            <div>Nguyễn Thúy Ngân</div>
+          </>
+        )}
       </motion.div>
 
       <motion.div
@@ -218,11 +242,11 @@ function Year2026Hero() {
           (Nhằm ngày 16 tháng 3 năm Bính Ngọ)
         </div>
         <div className="mt-4 w-[80%] max-w-lg px-4">
-          {weddingContent.receptionMapEmbedUrl ? (
+          {mapEmbed ? (
             <div className="aspect-[5/3] w-full overflow-hidden rounded-lg border border-[#b22f2f]/30 bg-stone-100 shadow-sm">
               <iframe
                 title="Bản đồ địa điểm hôn lễ"
-                src={weddingContent.receptionMapEmbedUrl}
+                src={mapEmbed}
                 className="h-full w-full border-0"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -234,7 +258,7 @@ function Year2026Hero() {
             <p className="text-center text-xs leading-relaxed text-stone-600">
               Thêm URL nhúng Google Maps vào{" "}
               <code className="rounded bg-stone-200/80 px-1 py-0.5 font-mono text-[0.7rem] text-stone-800">
-                receptionMapEmbedUrl
+                {isBrideSide ? "mapEmbedUrl" : "receptionMapEmbedUrl"}
               </code>{" "}
               trong{" "}
               <span className="font-mono text-[0.7rem]">content/wedding.ts</span>
@@ -288,9 +312,10 @@ function YearDigits({
 export type YearScrollProps = {
   /** Nội dung thiệp / block thường — chỉ hiện ở màn 2026, cuộn trang bình thường. */
   year2026Content?: ReactNode;
+  side?: "" | "groom" | "bride";
 };
 
-export function YearScroll({}: YearScrollProps) {
+export function YearScroll({ year2026Content, side }: YearScrollProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const touchStartYRef = useRef<number | null>(null);
   const wheelAccumRef = useRef(0);
@@ -471,15 +496,19 @@ export function YearScroll({}: YearScrollProps) {
 
   /** Màn 2026: hiện số năm một lúc rồi mờ dần. */
   const [finalYearDigitsOpacity, setFinalYearDigitsOpacity] = useState(1);
+  const [finalContentVisible, setFinalContentVisible] = useState(false);
 
   useEffect(() => {
     if (!isFinalYear) {
       setFinalYearDigitsOpacity(1);
+      setFinalContentVisible(false);
       return;
     }
     setFinalYearDigitsOpacity(1);
+    setFinalContentVisible(false);
     const t = window.setTimeout(() => {
       setFinalYearDigitsOpacity(0);
+      setFinalContentVisible(true);
     }, FINAL_YEAR_DIGITS_VISIBLE_MS);
     return () => window.clearTimeout(t);
   }, [isFinalYear]);
@@ -512,13 +541,21 @@ export function YearScroll({}: YearScrollProps) {
             ) : (
               <>
                 <div className="relative min-h-screen w-full">
-                  <Year2026Hero />
+                  <Year2026Hero side={side} />
                 </div>
-                {/* {year2026Content != null && year2026Content !== false ? (
-                  <div className="relative z-10 w-full bg-[#faf7f2] px-4 pb-20 pt-2 md:px-6">
+                {year2026Content != null && year2026Content !== false ? (
+                  <motion.div
+                    initial={false}
+                    animate={{
+                      opacity: finalContentVisible ? 1 : 0,
+                      y: finalContentVisible ? 0 : 10,
+                    }}
+                    transition={{ duration: 0.9, ease: "easeOut" }}
+                    className="relative z-10 w-full bg-[#faf7f2] px-4 pb-20 pt-2 md:px-6"
+                  >
                     {year2026Content}
-                  </div>
-                ) : null} */}
+                  </motion.div>
+                ) : null}
               </>
             )}
           </motion.div>
