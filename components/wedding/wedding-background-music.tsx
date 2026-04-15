@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { weddingContent } from "@/content/wedding";
+import { Volume2, VolumeX } from "lucide-react";
 
 const { backgroundMusic } = weddingContent;
 
@@ -10,6 +11,7 @@ const { backgroundMusic } = weddingContent;
  */
 export function WeddingBackgroundMusic() {
   const ref = useRef<HTMLAudioElement | null>(null);
+  const [muted, setMuted] = useState(false);
 
   useEffect(() => {
     const src = backgroundMusic?.src?.trim();
@@ -26,6 +28,7 @@ export function WeddingBackgroundMusic() {
     };
 
     const resume = () => {
+      if (el.muted) return;
       el.play()
         .then(() => {
           cleanupListeners();
@@ -49,18 +52,42 @@ export function WeddingBackgroundMusic() {
     };
   }, []);
 
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.muted = muted;
+    if (!muted) {
+      el.play().catch(() => {});
+    }
+  }, [muted]);
+
   const src = backgroundMusic?.src?.trim();
   if (!src) return null;
 
   return (
-    <audio
-      ref={ref}
-      src={src}
-      loop
-      playsInline
-      preload="auto"
-      className="pointer-events-none fixed left-0 top-0 h-0 w-0 opacity-0"
-      aria-hidden
-    />
+    <>
+      <audio
+        ref={ref}
+        src={src}
+        loop
+        playsInline
+        preload="auto"
+        className="pointer-events-none fixed left-0 top-0 h-0 w-0 opacity-0"
+        aria-hidden
+      />
+
+      <button
+        type="button"
+        onClick={() => setMuted((v) => !v)}
+        className="fixed bottom-6 right-6 z-50 inline-flex h-12 w-12 items-center justify-center rounded-full border border-black/10 bg-white/80 text-black shadow-lg backdrop-blur transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 dark:border-white/10 dark:bg-black/40 dark:text-white dark:hover:bg-black/55"
+        aria-label={muted ? "Bật nhạc" : "Tắt nhạc"}
+      >
+        {muted ? (
+          <VolumeX className="h-6 w-6" />
+        ) : (
+          <Volume2 className="h-6 w-6" />
+        )}
+      </button>
+    </>
   );
 }
