@@ -19,8 +19,9 @@ import {
 import { EvasiveDeclineButton } from "@/components/wedding/evasive-decline-button";
 import { ScrollDownHint } from "@/components/wedding/scroll-down-hint";
 import { YearScroll } from "@/components/wedding/year-scroll";
+import { WishForm } from "@/components/wedding/wish-form";
+import { WishCta } from "@/components/wedding/wish-cta";
 import { Button } from "../ui/button";
-import { Textarea } from "../ui/textarea";
 
 export type WeddingGuest = {
   row_number?: number;
@@ -99,6 +100,11 @@ export function WeddingInvitation({
   };
   return (
     <div className="bg-[#faf7f2] text-foreground dark:bg-[#1c1917] dark:text-stone-100">
+      <WishCta
+        wish={guest.wish ?? ""}
+        targetId="tang-loi-chuc"
+        startAfterId="thiep-moi"
+      />
       <div className="w-full text-black">
         <div className="relative flex min-h-screen justify-center items-center">
           {/* Background */}
@@ -247,14 +253,8 @@ export function WeddingInvitation({
             className={`${robotoSlab.className} text-xl font-bold leading-relaxed w-full p-4`}
           >
             {guest.title} có lời nào muốn tặng {guest.selfLow} không. Viết vào
-            đây nè
-            <div className="flex flex-wrap items-center justify-center gap-4 mt-12">
-              <Textarea
-                className="w-full bg-white text-[#b22f2f] border-2 border-[#b22f2f]"
-                placeholder="Viết lời chúc của bạn vào đây"
-              />
-              <Button className="bg-[#b22f2f] text-white">Gửi lời chúc</Button>
-            </div>
+            đây nè!!!
+            <WishForm guest={guest} />
           </div>
         </section>
 
