@@ -15,72 +15,73 @@ type EvasiveDeclineButtonProps = {
   children: ReactNode;
 };
 
+const PLAY_AREA_CLASS =
+  "inline-grid min-h-[12rem] w-[min(100%,18rem)] shrink-0";
+
 /**
- * Nút “từ chối” đùa: luôn nhảy chỗ khi hover / click / chạm để khách khó bấm trúng.
+ * Ban đầu: nút bình thường, cùng hàng với nút kia.
+ * Sau hover / click / chạm: khung lớn + absolute + top/right ngẫu nhiên để khó bấm trúng.
  */
 export function EvasiveDeclineButton({
   className,
   children,
 }: EvasiveDeclineButtonProps) {
-  const measureRef = useRef<HTMLButtonElement | null>(null);
-  const [layout, setLayout] = useState<{
-    w: number;
-    h: number;
-    left: number;
-    top: number;
-  } | null>(null);
+  const wrapRef = useRef<HTMLSpanElement | null>(null);
+  const btnRef = useRef<HTMLButtonElement | null>(null);
+  const [escaped, setEscaped] = useState(false);
+  const [pos, setPos] = useState<{ top: number; right: number } | null>(null);
+
+  const randomPosInWrap = useCallback(() => {
+    const wrap = wrapRef.current;
+    const btn = btnRef.current;
+    if (!wrap || !btn) return;
+    const pad = 8;
+    const bw = btn.offsetWidth;
+    const bh = btn.offsetHeight;
+    const maxTop = Math.max(pad, wrap.clientHeight - bh - pad);
+    const maxRight = Math.max(pad, wrap.clientWidth - bw - pad);
+    setPos({
+      top: pad + Math.random() * (maxTop - pad),
+      right: pad + Math.random() * (maxRight - pad),
+    });
+  }, []);
 
   useLayoutEffect(() => {
-    const el = measureRef.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    setLayout({
-      w: r.width,
-      h: r.height,
-      left: r.left,
-      top: r.top,
-    });
-  }, []);
+    if (!escaped) return;
+    randomPosInWrap();
+  }, [escaped, randomPosInWrap]);
 
   const jump = useCallback(() => {
-    setLayout((prev) => {
-      if (!prev) return prev;
-      const pad = 8;
-      const maxL = Math.max(pad, window.innerWidth - prev.w - pad);
-      const maxT = Math.max(pad, window.innerHeight - prev.h - pad);
-      return {
-        ...prev,
-        left: pad + Math.random() * (maxL - pad),
-        top: pad + Math.random() * (maxT - pad),
-      };
-    });
-  }, []);
-
-  if (!layout) {
-    return (
-      <span className="inline-flex">
-        <Button ref={measureRef} type="button" className={className}>
-          {children}
-        </Button>
-      </span>
-    );
-  }
+    if (!escaped) {
+      setEscaped(true);
+      return;
+    }
+    randomPosInWrap();
+  }, [escaped, randomPosInWrap]);
 
   return (
-    <>
-      <span
-        aria-hidden
-        className="inline-block shrink-0"
-        style={{ width: layout.w, height: layout.h }}
-      />
+    <span
+      ref={wrapRef}
+      className={cn(
+        "relative",
+        escaped ? PLAY_AREA_CLASS : "inline-flex shrink-0",
+        escaped && pos == null && "place-items-center",
+      )}
+    >
       <Button
-        ref={measureRef}
+        ref={btnRef}
         type="button"
         className={cn(
           className,
-          "fixed z-[100] select-none touch-manipulation",
+          escaped &&
+            pos != null &&
+            "absolute z-[100] select-none touch-manipulation",
         )}
-        style={{ left: layout.left, top: layout.top }}
+        style={
+          escaped && pos != null
+            ? { top: pos.top, right: pos.right }
+            : undefined
+        }
         onMouseEnter={jump}
         onPointerDown={(e) => {
           if (e.button !== 0) return;
@@ -90,6 +91,6 @@ export function EvasiveDeclineButton({
       >
         {children}
       </Button>
-    </>
+    </span>
   );
 }

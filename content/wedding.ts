@@ -23,7 +23,7 @@ export const weddingContent = {
     weekdayAndDate: "Chủ nhật, 09 tháng 11 năm 2026",
     lunarHint: "(Âm lịch: … / … / Bính Ngọ)",
     /** ISO 8601 — dùng cho đếm ngược; đổi khi có ngày chính thức */
-    countdownIso: "2026-11-09T10:00:00+07:00",
+    countdownIso: "2026-05-02T10:00:00+07:00",
   },
 
   /** Các sự kiện trong ngày — thêm/bớt object trong mảng nếu cần */

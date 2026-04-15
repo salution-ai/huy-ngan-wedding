@@ -192,7 +192,7 @@ export function WeddingInvitation() {
 
         <section
           id="xac-nhan-tham-du"
-          className="min-h-screen w-full scroll-mt-4 border-t border-[#b22f2f]/20 bg-[#faf7f2] px-4 py-16 md:px-6 md:py-24 flex flex-col items-center justify-start gap-8"
+          className="relative min-h-screen w-full scroll-mt-4 border-t border-[#b22f2f]/20 bg-[#faf7f2] px-4 py-16 md:px-6 md:py-24 flex flex-col items-center justify-start gap-8"
         >
           <div
             className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f]`}
