@@ -109,7 +109,13 @@ export const weddingContent = {
    * Để `src: ""` nếu không dùng nhạc.
    */
   backgroundMusic: {
-    src: "/audio/wedding-bg.mp3" as string,
+    src: "/audio/wedding-bg-50-nam.mp3" as string,
+    // tracks: [
+    //   "/audio/wedding-bg.mp3",
+    //   "/audio/wedding-bg-50-nam.mp3",
+    //   "/audio/wedding-bg-i-do.mp3",
+    //   "/audio/wedding-bg-nothing.mp3",
+    // ] as string[],
     /** 0–1 */
     volume: 0.35,
   },
