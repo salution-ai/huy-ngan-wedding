@@ -241,11 +241,12 @@ export type YearScrollProps = {
   year2026Content?: ReactNode;
 };
 
-export function YearScroll({ year2026Content }: YearScrollProps) {
+export function YearScroll({}: YearScrollProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const touchStartYRef = useRef<number | null>(null);
   const wheelAccumRef = useRef(0);
   const lockRef = useRef(false);
+  const idleTimerRef = useRef<number | null>(null);
 
   const slides = useMemo<YearSlide[]>(() => {
     const byYear: Record<string, { top: string; bottom: string }> = {
@@ -310,7 +311,26 @@ export function YearScroll({ year2026Content }: YearScrollProps) {
       });
     };
 
+    const clearIdle = () => {
+      if (idleTimerRef.current != null) {
+        window.clearTimeout(idleTimerRef.current);
+        idleTimerRef.current = null;
+      }
+    };
+
+    const scheduleIdleAdvance = () => {
+      clearIdle();
+      // If user is already at final year (2026), do not auto-scroll/auto-advance.
+      if (index >= maxIndex) return;
+      idleTimerRef.current = window.setTimeout(() => {
+        // If user stays too long without scrolling, auto-advance.
+        if (lockRef.current) return;
+        step(1);
+      }, 5000);
+    };
+
     const onWheel = (e: WheelEvent) => {
+      scheduleIdleAdvance();
       if (lockRef.current) {
         e.preventDefault();
         return;
@@ -355,10 +375,12 @@ export function YearScroll({ year2026Content }: YearScrollProps) {
     };
 
     const onTouchStart = (e: TouchEvent) => {
+      scheduleIdleAdvance();
       touchStartYRef.current = e.touches[0]?.clientY ?? null;
     };
 
     const onTouchMove = (e: TouchEvent) => {
+      scheduleIdleAdvance();
       if (lockRef.current) {
         e.preventDefault();
         return;
@@ -386,8 +408,10 @@ export function YearScroll({ year2026Content }: YearScrollProps) {
     el.addEventListener("wheel", onWheel, { passive: false });
     el.addEventListener("touchstart", onTouchStart, { passive: true });
     el.addEventListener("touchmove", onTouchMove, { passive: false });
+    scheduleIdleAdvance();
 
     return () => {
+      clearIdle();
       el.removeEventListener("wheel", onWheel);
       el.removeEventListener("touchstart", onTouchStart);
       el.removeEventListener("touchmove", onTouchMove);

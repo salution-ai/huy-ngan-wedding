@@ -21,6 +21,7 @@ import { ScrollDownHint } from "@/components/wedding/scroll-down-hint";
 import { YearScroll } from "@/components/wedding/year-scroll";
 import { WishForm } from "@/components/wedding/wish-form";
 import { WishCta } from "@/components/wedding/wish-cta";
+import { AutoScrollOnIdle } from "@/components/wedding/auto-scroll-on-idle";
 import { Button } from "../ui/button";
 
 export type WeddingGuest = {
@@ -100,6 +101,7 @@ export function WeddingInvitation({
   };
   return (
     <div className="bg-[#faf7f2] text-foreground dark:bg-[#1c1917] dark:text-stone-100">
+      <AutoScrollOnIdle targetId="year-scroll" idleMs={5000} maxScrollY={40} />
       <WishCta
         wish={guest.wish ?? ""}
         targetId="tang-loi-chuc"
