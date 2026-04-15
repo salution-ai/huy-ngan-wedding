@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 type EvasiveDeclineButtonProps = {
   className?: string;
   children: ReactNode;
+  onDeclineAttempt?: () => void;
 };
 
 const PLAY_AREA_CLASS =
@@ -25,6 +26,7 @@ const PLAY_AREA_CLASS =
 export function EvasiveDeclineButton({
   className,
   children,
+  onDeclineAttempt,
 }: EvasiveDeclineButtonProps) {
   const wrapRef = useRef<HTMLSpanElement | null>(null);
   const btnRef = useRef<HTMLButtonElement | null>(null);
@@ -86,6 +88,7 @@ export function EvasiveDeclineButton({
         onPointerDown={(e) => {
           if (e.button !== 0) return;
           e.preventDefault();
+          onDeclineAttempt?.();
           jump();
         }}
       >

@@ -24,7 +24,8 @@ import { WishCta } from "@/components/wedding/wish-cta";
 import { AutoScrollOnIdle } from "@/components/wedding/auto-scroll-on-idle";
 import { OneScreenScrollGate } from "@/components/wedding/one-screen-scroll-gate";
 import { SectionScrollSnap } from "@/components/wedding/section-scroll-snap";
-import { Button } from "../ui/button";
+import { ComingConfirmButton } from "@/components/wedding/coming-confirm-button";
+import { ComingDeclineButton } from "@/components/wedding/coming-decline-button";
 
 export type WeddingGuest = {
   row_number?: number;
@@ -240,10 +241,11 @@ export function WeddingInvitation({
             {guest.title} {guest.name} thân mến, {guest.titleLow} sẽ đến chung
             vui cùng {guest.selfLow} chứ ạ.
             <div className="flex flex-wrap items-center justify-center gap-4 mt-12">
-              <Button className="bg-[#b22f2f] text-white">Chắc chắn rồi</Button>
-              <EvasiveDeclineButton className="bg-white text-[#b22f2f]">
-                {guest.title} không thể đến
-              </EvasiveDeclineButton>
+              <ComingConfirmButton
+                guest={guest}
+                className="bg-[#b22f2f] text-white"
+              />
+              <ComingDeclineButton guest={guest} className="bg-white text-[#b22f2f]" />
             </div>
           </div>
         </section>

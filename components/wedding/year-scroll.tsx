@@ -125,20 +125,49 @@ function YearImageFrame({ slide }: { slide: ImagesSlide }) {
 }
 
 function Year2026Hero() {
+  const container = {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: 0.12,
+        delayChildren: 1,
+      },
+    },
+  } as const;
+
+  const item = {
+    hidden: { opacity: 0, y: 10, filter: "blur(2px)" },
+    show: { opacity: 1, y: 0, filter: "blur(0px)" },
+  } as const;
+
   return (
-    <div className="relative min-h-screen w-full bg-[#faf7f2] py-8 font-wedding-serif text-[#b22f2f] flex flex-col items-center justify-between">
+    <motion.div
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="relative min-h-screen w-full bg-[#faf7f2] py-8 font-wedding-serif text-[#b22f2f] flex flex-col items-center justify-between"
+    >
       <div
         className="pointer-events-none absolute inset-0 bg-[url('/gallery/hero.JPG')] bg-cover bg-center opacity-[0.32]"
         aria-hidden
       />
-      <div className="flex justify-center items-center">
+      <motion.div
+        variants={item}
+        transition={{ duration: 0.55, ease: "easeOut" }}
+        className="flex justify-center items-center"
+      >
         <img
           src="/objects/ChuHy.png"
           alt="Chữ Hỷ"
           className="w-[25%] h-full object-cover"
         />
-      </div>
-      <div className="flex flex-row items-center justify-center gap-6 px-4 w-full">
+      </motion.div>
+
+      <motion.div
+        variants={item}
+        transition={{ duration: 0.55, ease: "easeOut" }}
+        className="flex flex-row items-center justify-center gap-6 px-4 w-full"
+      >
         <div className="flex flex-1 flex-col items-center gap-1 text-center">
           <p>Ông bà</p>
           <p className="font-bold">LÊ HỮU MINH</p>
@@ -152,23 +181,42 @@ function Year2026Hero() {
           <p className="font-bold">ĐẶNG HẰNG MÂY</p>
           {/* <p className="text-stone-900">10 - CN4, Cụm công nghiệp và dịch vụ làng nghề Khúc Xuyên, P. Kinh Bắc, Bắc Ninh</p> */}
         </div>
-      </div>
-      <div className="flex flex-col items-center justify-center gap-0 font-bold text-xl py-2">
+      </motion.div>
+
+      <motion.div
+        variants={item}
+        transition={{ duration: 0.55, ease: "easeOut" }}
+        className="flex flex-col items-center justify-center gap-0 font-bold text-xl py-2"
+      >
         <div>TRÂN TRỌNG BÁO TIN</div>
         <div>LỄ THÀNH HÔN CỦA CON CHÚNG TÔI</div>
-      </div>
-      <div className={`flex flex-col items-center justify-center gap-3 font-bold text-3xl py-2 ${playwrightIE.className}`}>
+      </motion.div>
+
+      <motion.div
+        variants={item}
+        transition={{ duration: 0.55, ease: "easeOut" }}
+        className={`flex flex-col items-center justify-center gap-3 font-bold text-3xl py-2 ${playwrightIE.className}`}
+      >
         <div>Lê Đức Huy</div>
         <div>&</div>
         <div>Nguyễn Thúy Ngân</div>
-      </div>
-      <div className={`flex flex-col items-center justify-center gap-0 font-bold text-xl py-2 ${robotoSlab.className} gap-2`}>
-        <div className="font-normal text-lg">Hôn lễ được cử hành tại Nhà văn hóa khu 4</div>
+      </motion.div>
+
+      <motion.div
+        variants={item}
+        transition={{ duration: 0.55, ease: "easeOut" }}
+        className={`flex flex-col items-center justify-center gap-0 font-bold text-xl py-2 ${robotoSlab.className} gap-2`}
+      >
+        <div className="font-normal text-lg">
+          Hôn lễ được cử hành tại Nhà văn hóa khu 4
+        </div>
         <div>VÀO LÚC 10 GIỜ 00, THỨ BẢY</div>
         <div className="border-y-3 border-[#b22f2f]/40 px-8 py-2 text-3xl">
           02.05.2026
         </div>
-        <div className="text-lg font-normal">(Nhằm ngày 16 tháng 3 năm Bính Ngọ)</div>
+        <div className="text-lg font-normal">
+          (Nhằm ngày 16 tháng 3 năm Bính Ngọ)
+        </div>
         <div className="mt-4 w-[80%] max-w-lg px-4">
           {weddingContent.receptionMapEmbedUrl ? (
             <div className="aspect-[5/3] w-full overflow-hidden rounded-lg border border-[#b22f2f]/30 bg-stone-100 shadow-sm">
@@ -188,16 +236,17 @@ function Year2026Hero() {
               <code className="rounded bg-stone-200/80 px-1 py-0.5 font-mono text-[0.7rem] text-stone-800">
                 receptionMapEmbedUrl
               </code>{" "}
-              trong <span className="font-mono text-[0.7rem]">content/wedding.ts</span>
+              trong{" "}
+              <span className="font-mono text-[0.7rem]">content/wedding.ts</span>
             </p>
           )}
         </div>
-      </div>
+      </motion.div>
       {/* <div
         className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#faf7f2]/90 via-[#faf7f2] to-[#faf7f2]"
         aria-hidden
       /> */}
-    </div>
+    </motion.div>
   );
 }
 
