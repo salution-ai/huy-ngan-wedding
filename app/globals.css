@@ -184,6 +184,24 @@
   }
 }
 
+@keyframes sideGalleryScroll {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+.side-gallery-track {
+  animation: sideGalleryScroll 26s linear infinite;
+  will-change: transform;
+}
+
+.side-gallery-track.reverse {
+  animation-direction: reverse;
+}
+
 /* Đảm bảo các logo có khoảng cách đều nhau */
 .infinite-carousel > div {
   margin-right: 2rem;
