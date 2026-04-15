@@ -65,31 +65,31 @@ export const weddingContent = {
 
   /** Ảnh gallery — thay src bằng ảnh của bạn (Cloudinary hoặc /public/...) */
   gallery: {
-    coverSrc: "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80",
+    coverSrc: "https://drive.google.com/file/d/1d-Cvd77JDX7j2B0naKIyIHa-PgLefeUE/view?usp=drive_link",
     coverAlt: "Ảnh bìa thiệp — thay bằng ảnh cưới của bạn",
     items: [
       {
-        src: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=800&q=80",
+        src: "/album/1.JPG",
         alt: "Khoảnh khắc 1",
       },
       {
-        src: "https://images.unsplash.com/photo-1465495976277-4387d4b0b58c?w=800&q=80",
+        src: "/album/2.JPG",
         alt: "Khoảnh khắc 2",
       },
       {
-        src: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80",
+        src: "/album/3.JPG",
         alt: "Khoảnh khắc 3",
       },
       {
-        src: "https://images.unsplash.com/photo-1529636799528-93f6e06b7e5b?w=800&q=80",
+        src: "/album/4.JPG",
         alt: "Khoảnh khắc 4",
       },
       {
-        src: "https://images.unsplash.com/photo-1522413452209-7cbf37653562?w=800&q=80",
+        src: "/album/5.JPG",
         alt: "Khoảnh khắc 5",
       },
       {
-        src: "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=800&q=80",
+        src: "/album/6.JPG",
         alt: "Khoảnh khắc 6",
       },
     ],
