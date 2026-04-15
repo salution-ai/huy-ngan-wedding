@@ -11,9 +11,11 @@ type LayoutShellProps = {
 
 export default function LayoutShell({ children }: LayoutShellProps) {
   const pathname = usePathname()
-  const isInviteHome = pathname === "/"
+  // This project has two invite entry routes: `/` and `/:slug`.
+  // Both should be full-bleed without global header/footer.
+  const isInviteRoute = pathname === "/" || /^\/[^/]+$/.test(pathname)
 
-  if (isInviteHome) {
+  if (isInviteRoute) {
     return <main className="min-h-screen">{children}</main>
   }
 

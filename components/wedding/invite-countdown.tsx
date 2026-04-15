@@ -2,6 +2,19 @@
 
 import { useEffect, useState } from "react"
 import { weddingContent } from "@/content/wedding"
+import { Great_Vibes, Roboto_Slab } from "next/font/google"
+
+const greatVibes = Great_Vibes({
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-great-vibes",
+});
+
+const robotoSlab = Roboto_Slab({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  variable: "--font-roboto-slab",
+});
 
 function pad(n: number) {
   return n.toString().padStart(2, "0")
@@ -23,10 +36,10 @@ export function InviteCountdown() {
         {["Ngày", "Giờ", "Phút", "Giây"].map((label) => (
           <div
             key={label}
-            className="rounded-xl border border-primary/20 bg-card/80 px-2 py-3 shadow-sm backdrop-blur-sm dark:bg-card/40"
+            className="rounded-xl border border-[#b22f2f]/20 bg-[#faf7f2] px-2 py-3 shadow-sm backdrop-blur-sm dark:bg-[#1c1917]"
           >
-            <div className="font-audiowide text-2xl text-primary sm:text-3xl">--</div>
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground sm:text-xs">{label}</div>
+            <div className={`${greatVibes.className} text-2xl text-[#b22f2f] sm:text-3xl`}>--</div>
+            <div className={`${robotoSlab.className} text-[10px] uppercase tracking-wider text-[#b22f2f] sm:text-xs`}>{label}</div>
           </div>
         ))}
       </div>
@@ -51,10 +64,10 @@ export function InviteCountdown() {
       {items.map(({ label, value }) => (
         <div
           key={label}
-          className="rounded-xl border border-primary/20 bg-card/80 px-2 py-3 shadow-sm backdrop-blur-sm dark:bg-card/40"
+          className="rounded-xl border border-[#b22f2f]/20 bg-[#faf7f2] px-2 py-3 shadow-sm backdrop-blur-sm dark:bg-[#1c1917]"
         >
-          <div className="font-audiowide text-2xl tabular-nums text-primary sm:text-3xl">{value}</div>
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground sm:text-xs">{label}</div>
+          <div className={`${greatVibes.className} text-6xl tabular-nums text-[#b22f2f] sm:text-3xl`}>{value}</div>
+          <div className={`${robotoSlab.className} text-[14px] uppercase tracking-wider text-[#b22f2f] sm:text-xs`}>{label}</div>
         </div>
       ))}
     </div>

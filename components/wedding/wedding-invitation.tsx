@@ -22,6 +22,22 @@ import { YearScroll } from "@/components/wedding/year-scroll";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 
+export type WeddingGuest = {
+  row_number?: number;
+  slug?: string;
+  id?: string;
+  name: string;
+  title: string;
+  titleLow: string;
+  self: string;
+  selfLow: string;
+  grateful?: string;
+  join?: string;
+  wish?: string;
+  joinAt?: string;
+  declineNum?: string;
+};
+
 const archivoBlack = Archivo_Black({
   weight: ["400"],
   subsets: ["latin"],
@@ -67,14 +83,19 @@ function telHref(phone: string) {
   return digits.length ? `tel:${digits}` : "#";
 }
 
-export function WeddingInvitation() {
-  const guest = {
+export function WeddingInvitation({
+  guest: guestProp,
+}: {
+  guest?: Partial<WeddingGuest> | null;
+}) {
+  const guest: WeddingGuest = {
     name: "Tuấn Hưng",
     title: "Anh",
     titleLow: "anh",
     self: "Chúng em",
     selfLow: "chúng em",
-    grateful: "người đã bảo vệ, giúp đỡ và hỗ trợ chúng em trong suốt cuộc đời",
+    grateful: "",
+    ...(guestProp ?? {}),
   };
   return (
     <div className="bg-[#faf7f2] text-foreground dark:bg-[#1c1917] dark:text-stone-100">
@@ -202,7 +223,8 @@ export function WeddingInvitation() {
           <div
             className={`${robotoSlab.className} text-xl font-bold leading-relaxed w-full p-4`}
           >
-            {guest.title} {guest.name} thân mến, {guest.titleLow} sẽ đến chung vui cùng {guest.selfLow} chứ ạ.
+            {guest.title} {guest.name} thân mến, {guest.titleLow} sẽ đến chung
+            vui cùng {guest.selfLow} chứ ạ.
             <div className="flex flex-wrap items-center justify-center gap-4 mt-12">
               <Button className="bg-[#b22f2f] text-white">Chắc chắn rồi</Button>
               <EvasiveDeclineButton className="bg-white text-[#b22f2f]">
@@ -224,38 +246,25 @@ export function WeddingInvitation() {
           <div
             className={`${robotoSlab.className} text-xl font-bold leading-relaxed w-full p-4`}
           >
-            {guest.title} có lời nào muốn tặng {guest.selfLow} không. Viết vào đây nè
+            {guest.title} có lời nào muốn tặng {guest.selfLow} không. Viết vào
+            đây nè
             <div className="flex flex-wrap items-center justify-center gap-4 mt-12">
-              <Textarea className="w-full bg-white text-[#b22f2f] border-2 border-[#b22f2f]" placeholder="Viết lời chúc của bạn vào đây" />
+              <Textarea
+                className="w-full bg-white text-[#b22f2f] border-2 border-[#b22f2f]"
+                placeholder="Viết lời chúc của bạn vào đây"
+              />
               <Button className="bg-[#b22f2f] text-white">Gửi lời chúc</Button>
             </div>
           </div>
         </section>
-       
 
-        {/* Countdown */}
-        <section id="dem-nguoc" className="section-padding">
-          <div className="container-custom max-w-2xl">
-            <h2 className="text-center font-audiowide text-2xl text-primary md:text-3xl">
-              Đếm ngược đến ngày vui
-            </h2>
-            <p className="mt-2 text-center text-sm text-muted-foreground">
-              Cập nhật ngày giờ trong file content/wedding.ts
-            </p>
-            <div className="mt-8">
-              <InviteCountdown />
-            </div>
-          </div>
-        </section>
-
-
-        {/* Gallery */}
-        <section id="album" className="section-padding">
+        <section id="thu-vien-anh" className="min-h-screen w-full scroll-mt-4 border-t border-[#b22f2f]/20 bg-[#faf7f2] px-4 py-16 md:px-6 md:py-24 flex flex-col items-center justify-start gap-8">
           <div className="container-custom">
-            <h2 className="text-center font-audiowide text-2xl text-primary md:text-3xl">
-              Khoảnh khắc
-            </h2>
-            <DividerOrnament className="mx-auto mt-6 mb-10" />
+          <div
+            className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f] text-center mb-12`}
+          >
+            Thư viện ảnh
+          </div>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
               {gallery.items.map((img, i) => (
                 <div
@@ -273,7 +282,44 @@ export function WeddingInvitation() {
               ))}
             </div>
           </div>
-        </section>        
+        </section>
+
+        {/* Countdown */}
+        <section id="dem-nguoc" className="section-padding">
+          <div className="container-custom max-w-2xl">
+            <h2 className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f] text-center mb-12`}>
+              Đếm ngược đến ngày vui
+            </h2>
+            <div className="mt-8">
+              <InviteCountdown />
+            </div>
+          </div>
+        </section>
+
+        {/* Gallery */}
+        {/* <section id="album" className="section-padding">
+          <div className="container-custom">
+            <h2 className="text-center text-2xl text-primary md:text-3xl">
+              Album ảnh
+            </h2>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
+              {gallery.items.map((img, i) => (
+                <div
+                  key={i}
+                  className="relative aspect-[4/5] overflow-hidden rounded-xl border border-primary/10 shadow-md dark:border-primary/20"
+                >
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    fill
+                    className="object-cover transition duration-500 hover:scale-105"
+                    sizes="(max-width:768px) 50vw, 33vw"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section> */}
       </div>
 
       {/* <BackgroundPattern /> */}
