@@ -22,6 +22,8 @@ import { YearScroll } from "@/components/wedding/year-scroll";
 import { WishForm } from "@/components/wedding/wish-form";
 import { WishCta } from "@/components/wedding/wish-cta";
 import { AutoScrollOnIdle } from "@/components/wedding/auto-scroll-on-idle";
+import { OneScreenScrollGate } from "@/components/wedding/one-screen-scroll-gate";
+import { SectionScrollSnap } from "@/components/wedding/section-scroll-snap";
 import { Button } from "../ui/button";
 
 export type WeddingGuest = {
@@ -108,44 +110,46 @@ export function WeddingInvitation({
         startAfterId="thiep-moi"
       />
       <div className="w-full text-black">
-        <div className="relative flex min-h-screen justify-center items-center">
-          {/* Background */}
-          <div className="absolute inset-0 bg-[url('/gallery/hero.JPG')] bg-cover bg-center"></div>
+        <OneScreenScrollGate targetId="year-scroll" maxScrollY={40}>
+          <div className="relative flex min-h-screen justify-center items-center">
+            {/* Background */}
+            <div className="absolute inset-0 bg-[url('/gallery/hero.JPG')] bg-cover bg-center"></div>
 
-          {/* Overlay màu */}
-          <div className="absolute inset-0 bg-black/50"></div>
+            {/* Overlay màu */}
+            <div className="absolute inset-0 bg-black/50"></div>
 
-          {/* Content */}
-          <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-between gap-3 py-10 text-white">
-            <div className="flex flex-col items-center justify-center gap-3">
-              <p className="text-2xl font-bold">
-                <span className="font-wedding-serif">Kính gửi:</span>{" "}
-                <span className={`${playwriteIE.className}`}>
-                  {guest.title} {guest.name}
-                </span>
-              </p>
-              <p className="text-2xl font-bold">Đây là thiệp cưới của</p>
-              <p className={`text-2xl font-bold ${playwriteIE.className}`}>
-                Thúy Ngân và Đức Huy
-              </p>
-              <p className="text-lg">
-                {guest.title} hãy kéo xuống để mở nó ra nhé
-              </p>
+            {/* Content */}
+            <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-between gap-3 py-10 text-white">
+              <div className="flex flex-col items-center justify-center gap-3">
+                <p className="text-2xl font-bold">
+                  <span className="font-wedding-serif">Kính gửi:</span>{" "}
+                  <span className={`${playwriteIE.className}`}>
+                    {guest.title} {guest.name}
+                  </span>
+                </p>
+                <p className="text-2xl font-bold">Đây là thiệp cưới của</p>
+                <p className={`text-2xl font-bold ${playwriteIE.className}`}>
+                  Thúy Ngân và Đức Huy
+                </p>
+                <p className="text-lg">
+                  {guest.title} hãy kéo xuống để mở nó ra nhé
+                </p>
+              </div>
+              <div className="flex justify-center items-center">
+                <a
+                  href="#year-scroll"
+                  className="invite-open-btn-pulse inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-white border border-white shadow-md transition-shadow hover:shadow-lg"
+                >
+                  <span className="flex items-center gap-3 font-wedding-serif font-bold text-lg">
+                    <MailOpen className="h-6 w-6" />
+                    Mở thiệp
+                  </span>
+                </a>
+              </div>
+              <ScrollDownHint />
             </div>
-            <div className="flex justify-center items-center">
-              <a
-                href="#year-scroll"
-                className="invite-open-btn-pulse inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-white border border-white shadow-md transition-shadow hover:shadow-lg"
-              >
-                <span className="flex items-center gap-3 font-wedding-serif font-bold text-lg">
-                  <MailOpen className="h-6 w-6" />
-                  Mở thiệp
-                </span>
-              </a>
-            </div>
-            <ScrollDownHint />
           </div>
-        </div>
+        </OneScreenScrollGate>
         <div
           id="year-scroll"
           className={`font-archivo-black ${archivoBlack.className}`}
@@ -157,38 +161,40 @@ export function WeddingInvitation({
           />
         </div>
 
-        <section
-          id="thiep-moi"
-          className="min-h-screen w-full scroll-mt-4 border-t border-[#b22f2f]/20 bg-[#faf7f2] px-4 py-16 md:px-6 md:py-24 flex flex-col items-center justify-start gap-8"
-        >
-          <div
-            className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f]`}
+        <SectionScrollSnap snapUpToId="year-scroll">
+          <section
+            id="thiep-moi"
+            className="min-h-screen w-full scroll-mt-4 border-t border-[#b22f2f]/20 bg-[#faf7f2] px-4 py-16 md:px-6 md:py-24 flex flex-col items-center justify-start gap-8"
           >
-            Lời ngỏ
-          </div>
-          <div
-            className={`${playwritePE.className} text-xl font-normal leading-relaxed text-center`}
-          >
-            {guest.self} xin trân trọng kính mời {guest.titleLow} {guest.name}{" "}
-            đến dự buổi lễ thành hôn của {guest.selfLow}.
-            <br />
-            <br />
-            {guest.self} xin cảm ơn {guest.titleLow} đã dành thời gian quý báu
-            của mình để có mặt tại buổi lễ đặc biệt của {guest.selfLow}. Sự hiện
-            diện của {guest.titleLow} là niềm vinh hạnh lớn đối với{" "}
-            {guest.selfLow}.
-            {guest.grateful != null && guest.grateful !== "" ? (
-              <>
-                <br />
-                <br />
-                <span>
-                  Một lần nữa, {guest.selfLow} xin kính mời {guest.titleLow}{" "}
-                  {guest.name} - {guest.grateful}.
-                </span>
-              </>
-            ) : null}
-          </div>
-        </section>
+            <div
+              className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f]`}
+            >
+              Lời ngỏ
+            </div>
+            <div
+              className={`${playwritePE.className} text-xl font-normal leading-relaxed text-center`}
+            >
+              {guest.self} xin trân trọng kính mời {guest.titleLow} {guest.name}{" "}
+              đến dự buổi lễ thành hôn của {guest.selfLow}.
+              <br />
+              <br />
+              {guest.self} xin cảm ơn {guest.titleLow} đã dành thời gian quý báu
+              của mình để có mặt tại buổi lễ đặc biệt của {guest.selfLow}. Sự hiện
+              diện của {guest.titleLow} là niềm vinh hạnh lớn đối với{" "}
+              {guest.selfLow}.
+              {guest.grateful != null && guest.grateful !== "" ? (
+                <>
+                  <br />
+                  <br />
+                  <span>
+                    Một lần nữa, {guest.selfLow} xin kính mời {guest.titleLow}{" "}
+                    {guest.name} - {guest.grateful}.
+                  </span>
+                </>
+              ) : null}
+            </div>
+          </section>
+        </SectionScrollSnap>
 
         <section
           id="thoi-gian-va-dia-diem"
