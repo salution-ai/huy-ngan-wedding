@@ -104,6 +104,16 @@ export const weddingContent = {
 
   closingLine: "Sự hiện diện của quý khách là niềm vinh hạnh của gia đình chúng con.",
 
+  /**
+   * Nhạc nền khi mở thiệp — đặt file mp3 vào `public/audio/` (vd. `wedding-bg.mp3`) và trỏ `src`.
+   * Để `src: ""` nếu không dùng nhạc.
+   */
+  backgroundMusic: {
+    src: "/audio/wedding-bg.mp3" as string,
+    /** 0–1 */
+    volume: 0.35,
+  },
+
   /** Gợi ý: iframe Google Maps — dán src embed khi có; để trống thì chỉ hiện nút mở Maps */
   mapEmbedUrl: "" as string,
 
