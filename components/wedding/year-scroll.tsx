@@ -203,7 +203,17 @@ function Year2026Hero({ side }: { side?: "" | "groom" | "bride" }) {
         className="flex flex-col items-center justify-center gap-0 font-bold text-xl py-2"
       >
         <div>TRÂN TRỌNG BÁO TIN</div>
-        <div>LỄ THÀNH HÔN CỦA CON CHÚNG TÔI</div>
+        <div>
+          {isBrideSide
+            ? "KÍNH MỜI QUÝ KHÁCH"
+            : "TRÂN TRỌNG BÁO TIN"}
+        </div>
+        
+        <div>
+          {isBrideSide
+            ? "TỚI DỰ BỮA CƠM THÂN MẬT"
+            : "LỄ THÀNH HÔN CỦA CON CHÚNG TÔI"}
+        </div>
       </motion.div>
 
       <motion.div
