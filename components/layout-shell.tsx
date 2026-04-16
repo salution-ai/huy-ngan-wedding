@@ -42,11 +42,11 @@ export default function LayoutShell({ children }: LayoutShellProps) {
                   className="absolute inset-0 h-full w-full object-cover"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-black/15" />
+                <div className="absolute inset-0 bg-black/5" />
               </div>
             ))}
           </div>
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/35" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/5" />
         </div>
       </div>
     )
@@ -54,9 +54,14 @@ export default function LayoutShell({ children }: LayoutShellProps) {
 
   const Shell = ({ children }: { children: React.ReactNode }) => (
     <div className="min-h-screen w-full bg-[#faf7f2]">
-      <div className="min-h-screen w-full bg-gradient-to-b from-black/30 via-black/10 to-black/30">
+      <div className="relative min-h-screen w-full bg-gradient-to-b from-black/5 via-transparent to-black/5">
+        {/* Global fixed background image (20% opacity) */}
+        <div
+          className="pointer-events-none fixed inset-0 z-0 bg-[url('/gallery/hero-bg.png')] bg-cover bg-center opacity-3"
+          aria-hidden
+        />
         {/* Fixed side sliders (desktop only) */}
-        <div className="pointer-events-none fixed inset-0 hidden lg:block">
+        <div className="pointer-events-none fixed inset-0 z-10 hidden lg:block">
           <div className="mx-auto flex h-full w-full max-w-[1200px] items-stretch justify-center">
             <div className="pointer-events-auto">
               <SideGallery />
@@ -69,7 +74,7 @@ export default function LayoutShell({ children }: LayoutShellProps) {
         </div>
 
         {/* Center "phone" content scrolls normally */}
-        <div className="relative mx-auto min-h-screen w-full max-w-[1200px]">
+        <div className="relative z-10 mx-auto min-h-screen w-full max-w-[1200px]">
           <div className="mx-auto w-full max-w-[430px] overflow-x-hidden bg-background shadow-2xl">
             {children}
           </div>
