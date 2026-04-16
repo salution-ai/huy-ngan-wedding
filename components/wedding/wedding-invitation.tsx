@@ -1,14 +1,6 @@
-import Image from "next/image";
-import Link from "next/link";
-import { MapPin, Clock, Phone, ArrowDown, MailOpen } from "lucide-react";
+import { MailOpen } from "lucide-react";
 import { weddingContent } from "@/content/wedding";
 import { InviteCountdownSection } from "@/components/wedding/invite-countdown-section";
-import {
-  BackgroundPattern,
-  DividerOrnament,
-  FloralCornerBL,
-  FloralCornerTR,
-} from "@/components/wedding/decorative";
 import {
   Archivo_Black,
   Playwrite_IE,
@@ -28,6 +20,7 @@ import { ComingDeclineButton } from "@/components/wedding/coming-decline-button"
 import { GalleryHorizontalMarquee } from "@/components/wedding/gallery-horizontal-marquee";
 import { GalleryGridScrollFlyIn } from "@/components/wedding/gallery-grid-scroll-fly-in";
 import { WeddingPageTextReveal } from "@/components/wedding/wedding-page-text-reveal";
+import { WishList } from "@/components/wedding/wish-list";
 
 export type WeddingGuest = {
   row_number?: number;
@@ -74,22 +67,9 @@ const robotoSlab = Roboto_Slab({
 });
 
 const {
-  couple,
-  invitationIntro,
-  date,
-  events,
   timeline,
-  dressCode,
   gallery,
-  contact,
-  closingLine,
-  mapEmbedUrl,
 } = weddingContent;
-
-function telHref(phone: string) {
-  const digits = phone.replace(/\D/g, "");
-  return digits.length ? `tel:${digits}` : "#";
-}
 
 export function WeddingInvitation({
   guest: guestProp,
@@ -297,6 +277,8 @@ export function WeddingInvitation({
               đây nè!!!
             </p>
             <WishForm guest={guest} />
+            {/* Danh sách lời chúc */}
+            <WishList />
           </div>
         </section>
 

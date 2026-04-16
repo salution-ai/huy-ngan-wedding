@@ -245,3 +245,28 @@
   animation: invite-open-pulse 2.2s ease-in-out infinite;
   transform-origin: center;
 }
+
+/* Custom scrollbar (Wish list) */
+.wish-scrollbar {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(178, 47, 47, 0.55) transparent;
+}
+
+.wish-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.wish-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.wish-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(178, 47, 47, 0.55);
+  border-radius: 999px;
+  border: 2px solid transparent; /* makes thumb visually thinner */
+  background-clip: content-box;
+}
+
+.wish-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(178, 47, 47, 0.75);
+}
