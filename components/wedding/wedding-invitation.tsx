@@ -294,11 +294,14 @@ export function WeddingInvitation({
             Thư viện ảnh
           </div>
             <GalleryGridScrollFlyIn items={gallery.items} />
-            <GalleryHorizontalMarquee items={gallery.items} />
+            <GalleryHorizontalMarquee
+              items={gallery.items}
+              className="lg:hidden"
+            />
             <GalleryHorizontalMarquee
               items={gallery.items}
               reverse
-              className="mt-2"
+              className="mt-2 lg:hidden"
             />
           </div>
         </section>
