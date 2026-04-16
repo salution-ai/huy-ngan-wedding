@@ -25,6 +25,7 @@ import { OneScreenScrollGate } from "@/components/wedding/one-screen-scroll-gate
 import { SectionScrollSnap } from "@/components/wedding/section-scroll-snap";
 import { ComingConfirmButton } from "@/components/wedding/coming-confirm-button";
 import { ComingDeclineButton } from "@/components/wedding/coming-decline-button";
+import { GalleryHorizontalMarquee } from "@/components/wedding/gallery-horizontal-marquee";
 
 export type WeddingGuest = {
   row_number?: number;
@@ -269,7 +270,7 @@ export function WeddingInvitation({
           </div>
         </section>
 
-        <section id="thu-vien-anh" className="min-h-screen w-full scroll-mt-4 border-t border-[#b22f2f]/20 bg-[#faf7f2] px-4 py-16 md:px-6 md:py-24 flex flex-col items-center justify-start gap-8">
+        <section id="thu-vien-anh" className="min-h-screen w-full scroll-mt-4 border-t border-[#b22f2f]/20 bg-[#faf7f2] py-16 md:py-24 flex flex-col items-center justify-start gap-8">
           <div className="container-custom">
           <div
             className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f] text-center mb-12`}
@@ -292,13 +293,19 @@ export function WeddingInvitation({
                 </div>
               ))}
             </div>
+            <GalleryHorizontalMarquee items={gallery.items} />
+            <GalleryHorizontalMarquee
+              items={gallery.items}
+              reverse
+              className="mt-4"
+            />
           </div>
         </section>
 
         {/* Countdown */}
-        <section id="dem-nguoc" className="section-padding">
+        <section id="dem-nguoc" className="py-10">
           <div className="container-custom max-w-2xl">
-            <h2 className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f] text-center mb-12`}>
+            <h2 className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f] text-center mb-8`}>
               Đếm ngược đến ngày vui
             </h2>
             <div className="mt-8">
