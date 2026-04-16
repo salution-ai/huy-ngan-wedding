@@ -371,6 +371,17 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
     const el = ref.current;
     if (!el) return;
 
+    const isActiveInViewport = () => {
+      const rect = el.getBoundingClientRect();
+      // YearScroll is intended to "own" the viewport while in step mode.
+      // Treat it active when it covers a large part of the viewport.
+      const vh = window.innerHeight || 1;
+      const visibleTop = Math.max(0, rect.top);
+      const visibleBottom = Math.min(vh, rect.bottom);
+      const visible = Math.max(0, visibleBottom - visibleTop);
+      return visible / vh >= 0.6;
+    };
+
     const step = (dir: 1 | -1) => {
       if (lockRef.current) return;
       setIndex((prev) => {
@@ -404,6 +415,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
     };
 
     const onWheel = (e: WheelEvent) => {
+      if (!isActiveInViewport()) return;
       scheduleIdleAdvance();
       if (lockRef.current) {
         e.preventDefault();
@@ -449,11 +461,13 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
     };
 
     const onTouchStart = (e: TouchEvent) => {
+      if (!isActiveInViewport()) return;
       scheduleIdleAdvance();
       touchStartYRef.current = e.touches[0]?.clientY ?? null;
     };
 
     const onTouchMove = (e: TouchEvent) => {
+      if (!isActiveInViewport()) return;
       scheduleIdleAdvance();
       if (lockRef.current) {
         e.preventDefault();
@@ -479,16 +493,23 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
       }
     };
 
-    el.addEventListener("wheel", onWheel, { passive: false });
-    el.addEventListener("touchstart", onTouchStart, { passive: true });
-    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    // Attach to window so wheel over "side background" still steps years.
+    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
+    window.addEventListener("touchstart", onTouchStart, {
+      passive: true,
+      capture: true,
+    });
+    window.addEventListener("touchmove", onTouchMove, {
+      passive: false,
+      capture: true,
+    });
     scheduleIdleAdvance();
 
     return () => {
       clearIdle();
-      el.removeEventListener("wheel", onWheel);
-      el.removeEventListener("touchstart", onTouchStart);
-      el.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("wheel", onWheel, true);
+      window.removeEventListener("touchstart", onTouchStart, true);
+      window.removeEventListener("touchmove", onTouchMove, true);
     };
   }, [index, maxIndex]);
 
