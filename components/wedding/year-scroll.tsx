@@ -144,18 +144,18 @@ function Year2026Hero({ side }: { side?: "" | "groom" | "bride" }) {
 
   const groomParents = (
     <div className="flex flex-1 flex-col items-center gap-1 text-center">
-      <p>Ông bà</p>
-      <p className="font-bold">LÊ HỮU MINH</p>
-      <p className="font-bold">ĐÀO THỊ MINH</p>
+      <p>Nhà trai</p>
+      <p className="font-bold">ÔNG LÊ HỮU MINH</p>
+      <p className="font-bold">BÀ ĐÀO THỊ MINH</p>
       {/* <p className="text-stone-900">339 Hoàng Quốc Việt, P. Vũ Ninh, Bắc Ninh</p> */}
     </div>
   );
 
   const brideParents = (
     <div className="flex flex-1 flex-col items-center gap-1 text-center">
-      <p>Ông bà</p>
-      <p className="font-bold">NGUYỄN VĂN QUY</p>
-      <p className="font-bold">ĐẶNG HẰNG MÂY</p>
+      <p>Nhà gái</p>
+      <p className="font-bold">ÔNG NGUYỄN VĂN QUY</p>
+      <p className="font-bold">BÀ ĐẶNG HẰNG MÂY</p>
       {/* <p className="text-stone-900">10 - CN4, Cụm công nghiệp và dịch vụ làng nghề Khúc Xuyên, P. Kinh Bắc, Bắc Ninh</p> */}
     </div>
   );
@@ -231,10 +231,35 @@ function Year2026Hero({ side }: { side?: "" | "groom" | "bride" }) {
         transition={{ duration: 0.55, ease: "easeOut" }}
         className={`flex flex-col items-center justify-center gap-0 font-bold text-xl py-2 ${robotoSlab.className} gap-2`}
       >
-        <div className="font-normal text-lg">
-          Hôn lễ được cử hành tại Nhà văn hóa khu 4
+        <div className="font-normal text-lg text-center">
+          {(isBrideSide
+            ? weddingContent.heroEvent?.bride?.venueLines
+            : weddingContent.heroEvent?.groom?.venueLines) ? (
+            (isBrideSide
+              ? weddingContent.heroEvent?.bride?.venueLines
+              : weddingContent.heroEvent?.groom?.venueLines
+            )?.map((line, idx) => (
+              <span key={idx} className="block">
+                {line}
+              </span>
+            ))
+          ) : (
+            <>
+              <span className="block text-center">
+                {isBrideSide
+                  ? "Hôn lễ được cử hành tại Tư gia nhà gái"
+                  : "Hôn lễ được cử hành tại Nhà văn hóa khu 4"}
+              </span>
+            </>
+          )}
         </div>
-        <div>VÀO LÚC 10 GIỜ 00, THỨ BẢY</div>
+        <div>
+          {isBrideSide
+            ? (weddingContent.heroEvent?.bride?.timeLine ??
+              "VÀO LÚC 09 GIỜ 30, THỨ BẢY")
+            : (weddingContent.heroEvent?.groom?.timeLine ??
+              "VÀO LÚC 10 GIỜ 00, THỨ BẢY")}
+        </div>
         <div className="border-y-3 border-[#b22f2f]/40 px-8 py-2 text-3xl">
           02.05.2026
         </div>
@@ -564,7 +589,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
                 <div className="relative min-h-screen w-full">
                   <Year2026Hero side={side} />
                 </div>
-                {year2026Content != null && year2026Content !== false ? (
+                {/* {year2026Content != null && year2026Content !== false ? (
                   <motion.div
                     initial={false}
                     animate={{
@@ -576,7 +601,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
                   >
                     {year2026Content}
                   </motion.div>
-                ) : null}
+                ) : null} */}
               </>
             )}
           </motion.div>

@@ -1,7 +1,6 @@
 "use client"
 
 import gsap from "gsap"
-import { Circle, Heart } from "lucide-react"
 import { useCallback, useMemo, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"

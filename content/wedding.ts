@@ -26,6 +26,24 @@ export const weddingContent = {
     countdownIso: "2026-05-02T10:00:00+07:00",
   },
 
+  /** Nội dung hiển thị trong màn 2026 (khối map + thời gian/địa điểm) */
+  heroEvent: {
+    groom: {
+      venueLines: [
+        "Hôn lễ được cử hành tại Nhà văn hóa khu 4",
+        "Số 339 Hoàng Quốc Việt, P. Vũ Ninh, Bắc Ninh",
+      ],
+      timeLine: "VÀO LÚC 10 GIỜ 00, THỨ BẢY",
+    },
+    bride: {
+      venueLines: [
+        "Hôn lễ được cử hành tại Tư gia nhà gái",
+        "Cụm làng nghề công nghiệp phường Khúc Xuyên, Bắc Ninh",
+      ],
+      timeLine: "VÀO LÚC 09 GIỜ 30, THỨ BẢY",
+    },
+  },
+
   /** Các sự kiện trong ngày — thêm/bớt object trong mảng nếu cần */
   events: [
     {

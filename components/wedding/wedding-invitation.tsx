@@ -77,11 +77,11 @@ export function WeddingInvitation({
   guest?: Partial<WeddingGuest> | null;
 }) {
   const guest: WeddingGuest = {
-    name: "Tuấn Hưng",
-    title: "Anh",
-    titleLow: "anh",
-    self: "Chúng em",
-    selfLow: "chúng em",
+    name: "",
+    title: "Quý khách",
+    titleLow: "quý khách",
+    self: "Gia đình chúng tôi",
+    selfLow: "gia đình chúng tôi",
     grateful: "",
     ...(guestProp ?? {}),
   };
