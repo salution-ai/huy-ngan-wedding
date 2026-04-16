@@ -46,6 +46,7 @@ export function ComingConfirmButton({ guest, className }: Props) {
   return (
     <Button
       className={className}
+      data-wedding-reveal
       onClick={submit}
       disabled={status === "sending" || status === "success"}
     >

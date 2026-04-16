@@ -73,6 +73,7 @@ export function EvasiveDeclineButton({
       <Button
         ref={btnRef}
         type="button"
+        data-wedding-reveal
         className={cn(
           className,
           escaped &&

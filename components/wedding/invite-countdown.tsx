@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { weddingContent } from "@/content/wedding"
 import { Great_Vibes, Roboto_Slab } from "next/font/google"
 
@@ -20,15 +20,27 @@ function pad(n: number) {
   return n.toString().padStart(2, "0")
 }
 
-export function InviteCountdown() {
+export function InviteCountdown({
+  onCountdownReady,
+}: {
+  /** Gọi một lần sau khi đã gắn số đếm thật (tránh GSAP bám nhầm DOM skeleton). */
+  onCountdownReady?: () => void;
+} = {}) {
   const target = new Date(weddingContent.date.countdownIso).getTime()
   const [now, setNow] = useState<number | null>(null)
+  const readyReported = useRef(false)
 
   useEffect(() => {
     setNow(Date.now())
     const t = setInterval(() => setNow(Date.now()), 1000)
     return () => clearInterval(t)
   }, [])
+
+  useEffect(() => {
+    if (now === null || readyReported.current) return
+    readyReported.current = true
+    onCountdownReady?.()
+  }, [now, onCountdownReady])
 
   if (now === null) {
     return (
@@ -38,8 +50,18 @@ export function InviteCountdown() {
             key={label}
             className="rounded-xl border border-[#b22f2f]/20 bg-[#faf7f2] px-2 py-3 shadow-sm backdrop-blur-sm dark:bg-[#1c1917]"
           >
-            <div className={`${greatVibes.className} text-2xl text-[#b22f2f] sm:text-3xl`}>--</div>
-            <div className={`${robotoSlab.className} text-[10px] uppercase tracking-wider text-[#b22f2f] sm:text-xs`}>{label}</div>
+            <div
+              data-reveal="cell-value"
+              className={`${greatVibes.className} text-2xl text-[#b22f2f] sm:text-3xl`}
+            >
+              --
+            </div>
+            <div
+              data-reveal="cell-label"
+              className={`${robotoSlab.className} text-[10px] uppercase tracking-wider text-[#b22f2f] sm:text-xs`}
+            >
+              {label}
+            </div>
           </div>
         ))}
       </div>
@@ -66,8 +88,18 @@ export function InviteCountdown() {
           key={label}
           className="rounded-xl border border-[#b22f2f]/20 bg-[#faf7f2] px-2 py-3 shadow-sm backdrop-blur-sm dark:bg-[#1c1917]"
         >
-          <div className={`${greatVibes.className} text-6xl tabular-nums text-[#b22f2f] sm:text-3xl`}>{value}</div>
-          <div className={`${robotoSlab.className} text-[14px] uppercase tracking-wider text-[#b22f2f] sm:text-xs`}>{label}</div>
+          <div
+            data-reveal="cell-value"
+            className={`${greatVibes.className} text-6xl tabular-nums text-[#b22f2f] sm:text-3xl`}
+          >
+            {value}
+          </div>
+          <div
+            data-reveal="cell-label"
+            className={`${robotoSlab.className} text-[14px] uppercase tracking-wider text-[#b22f2f] sm:text-xs`}
+          >
+            {label}
+          </div>
         </div>
       ))}
     </div>

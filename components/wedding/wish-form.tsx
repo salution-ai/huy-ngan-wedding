@@ -1,6 +1,8 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import gsap from "gsap"
+import { Circle, Heart } from "lucide-react"
+import { useCallback, useMemo, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -19,11 +21,15 @@ export function WishForm({ guest }: Props) {
     "idle",
   )
   const [message, setMessage] = useState<string>("")
+  const [bubbleMode, setBubbleMode] = useState(false)
+  const [bubbleDeparted, setBubbleDeparted] = useState(false)
+  const submitBtnRef = useRef<HTMLButtonElement | null>(null)
+  const bubbleLockRef = useRef(false)
 
   const canSubmit =
     alias.trim().length > 0 && wish.trim().length > 0 && status !== "sending"
 
-  const submit = async () => {
+  const submit = useCallback(async () => {
     const content = wish.trim()
     if (!content || status === "sending") return
 
@@ -57,12 +63,102 @@ export function WishForm({ guest }: Props) {
       setStatus("error")
       setMessage("Gửi lời chúc thất bại. Vui lòng thử lại.")
     }
-  }
+  }, [alias, guest, status, wish])
+
+  const animateBubble = useCallback(() => {
+    const btn = submitBtnRef.current
+    if (!btn) return
+    if (bubbleLockRef.current) return
+    bubbleLockRef.current = true
+    setBubbleMode(true)
+
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setBubbleDeparted(true)
+      return
+    }
+
+    const h = window.innerHeight
+
+    gsap.killTweensOf(btn)
+    gsap.set(btn, {
+      willChange: "transform",
+      backgroundColor: "rgba(255,255,255,0.10)",
+      borderColor: "rgba(178,47,47,0.55)",
+      boxShadow: "0 18px 44px rgba(0,0,0,0.12)",
+      backdropFilter: "blur(10px)",
+    })
+
+    const tl = gsap.timeline({
+      defaults: { ease: "power2.out" },
+      onComplete: () => setBubbleDeparted(true),
+    })
+    tl.to(btn, { scale: 1.04, duration: 0.12 })
+      .to(
+        btn,
+        {
+          borderRadius: 9999,
+          width: 56,
+          minWidth: 56,
+          paddingLeft: 0,
+          paddingRight: 0,
+          borderWidth: 2,
+          duration: 0.22,
+          ease: "power2.inOut",
+        },
+        "<0.02",
+      )
+      .to(
+        btn,
+        {
+          y: -Math.min(170, h * 0.22),
+          x: 18,
+          rotation: 10,
+          duration: 0.55,
+          ease: "sine.inOut",
+        },
+        "<0.06",
+      )
+      .to(
+        btn,
+        {
+          y: `-=${Math.min(46, h * 0.06)}`,
+          x: 8,
+          rotation: 6,
+          duration: 0.55,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: 3,
+        },
+        ">-0.05",
+      )
+      .to(btn, {
+        y: -Math.min(520, h * 0.75),
+        x: 0,
+        rotation: 0,
+        scale: 0.92,
+        duration: 0.65,
+        ease: "power2.in",
+      })
+      .to(btn, { opacity: 0, duration: 0.18 }, "<0.35")
+  }, [])
+
+  const onSubmitClick = useCallback(() => {
+    animateBubble()
+    void submit()
+  }, [animateBubble, submit])
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-4 mt-12">
       <div className="w-full">
-        <div className="mb-2 text-sm font-semibold text-[#b22f2f]">Bí danh</div>
+        <div
+          className="mb-2 text-sm font-semibold text-[#b22f2f]"
+          data-wedding-reveal
+        >
+          Bí danh
+        </div>
       <Input
         value={alias}
         onChange={(e) => setAlias(e.target.value)}
@@ -81,19 +177,34 @@ export function WishForm({ guest }: Props) {
       />
 
       <div className="flex w-full flex-col items-center gap-3">
-        <Button
-          className="bg-[#b22f2f] text-white"
-          onClick={submit}
-          disabled={!canSubmit}
-        >
-          {status === "sending" ? "Đang gửi..." : "Gửi lời chúc"}
-        </Button>
+        {bubbleDeparted ? null : (
+          <Button
+            ref={submitBtnRef}
+            className={
+              bubbleMode
+                ? "bg-transparent text-[#b22f2f] border border-[#b22f2f]/50"
+                : "bg-[#b22f2f] text-white"
+            }
+            data-wedding-reveal
+            onClick={onSubmitClick}
+            disabled={!canSubmit}
+          >
+            {bubbleMode ? (
+              "💖"
+            ) : status === "sending" ? (
+              "Đang gửi..."
+            ) : (
+              "Gửi lời chúc"
+            )}
+          </Button>
+        )}
 
         {message ? (
           <div
             className={`text-sm ${
               status === "success" ? "text-green-600" : "text-red-600"
             }`}
+            data-wedding-reveal
             role="status"
             aria-live="polite"
           >

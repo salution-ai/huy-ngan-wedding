@@ -76,6 +76,7 @@ export function WishCta({ wish, targetId, startAfterId }: Props) {
   return (
     <button
       type="button"
+      data-wedding-reveal
       onClick={() => {
         const el = document.getElementById(targetId)
         if (!el) return

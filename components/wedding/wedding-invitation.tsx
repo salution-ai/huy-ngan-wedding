@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Clock, Phone, ArrowDown, MailOpen } from "lucide-react";
 import { weddingContent } from "@/content/wedding";
-import { InviteCountdown } from "@/components/wedding/invite-countdown";
+import { InviteCountdownSection } from "@/components/wedding/invite-countdown-section";
 import {
   BackgroundPattern,
   DividerOrnament,
@@ -26,6 +26,8 @@ import { SectionScrollSnap } from "@/components/wedding/section-scroll-snap";
 import { ComingConfirmButton } from "@/components/wedding/coming-confirm-button";
 import { ComingDeclineButton } from "@/components/wedding/coming-decline-button";
 import { GalleryHorizontalMarquee } from "@/components/wedding/gallery-horizontal-marquee";
+import { GalleryGridScrollFlyIn } from "@/components/wedding/gallery-grid-scroll-fly-in";
+import { WeddingPageTextReveal } from "@/components/wedding/wedding-page-text-reveal";
 
 export type WeddingGuest = {
   row_number?: number;
@@ -105,6 +107,7 @@ export function WeddingInvitation({
   };
   return (
     <div className="bg-[#faf7f2] text-foreground dark:bg-[#1c1917] dark:text-stone-100">
+      <WeddingPageTextReveal>
       <AutoScrollOnIdle targetId="year-scroll" idleMs={5000} maxScrollY={40} />
       <WishCta
         wish={guest.wish ?? ""}
@@ -123,23 +126,29 @@ export function WeddingInvitation({
             {/* Content */}
             <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-between gap-3 py-10 text-white">
               <div className="flex flex-col items-center justify-center gap-3">
-                <p className="text-2xl font-bold">
+                <p className="text-2xl font-bold" data-wedding-reveal>
                   <span className="font-wedding-serif">Kính gửi:</span>{" "}
                   <span className={`${playwriteIE.className}`}>
                     {guest.title} {guest.name}
                   </span>
                 </p>
-                <p className="text-2xl font-bold">Đây là thiệp cưới của</p>
-                <p className={`text-2xl font-bold ${playwriteIE.className}`}>
+                <p className="text-2xl font-bold" data-wedding-reveal>
+                  Đây là thiệp cưới của
+                </p>
+                <p
+                  className={`text-2xl font-bold ${playwriteIE.className}`}
+                  data-wedding-reveal
+                >
                   Thúy Ngân và Đức Huy
                 </p>
-                <p className="text-lg">
+                <p className="text-lg" data-wedding-reveal>
                   {guest.title} hãy kéo xuống để mở nó ra nhé
                 </p>
               </div>
               <div className="flex justify-center items-center">
                 <a
                   href="#year-scroll"
+                  data-wedding-reveal
                   className="invite-open-btn-pulse inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-white border border-white shadow-md transition-shadow hover:shadow-lg"
                 >
                   <span className="flex items-center gap-3 font-wedding-serif font-bold text-lg">
@@ -154,6 +163,7 @@ export function WeddingInvitation({
         </OneScreenScrollGate>
         <div
           id="year-scroll"
+          data-wedding-reveal-skip
           className={`font-archivo-black ${archivoBlack.className}`}
         >
           <YearScroll
@@ -171,11 +181,13 @@ export function WeddingInvitation({
           >
             <div
               className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f]`}
+              data-wedding-reveal
             >
               Lời ngỏ
             </div>
             <div
               className={`${playwritePE.className} text-xl font-normal leading-relaxed text-center`}
+              data-wedding-reveal
             >
               {guest.self} xin trân trọng kính mời {guest.titleLow} {guest.name}{" "}
               đến dự buổi lễ thành hôn của {guest.selfLow}.
@@ -205,6 +217,7 @@ export function WeddingInvitation({
         >
           <div
             className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f]`}
+            data-wedding-reveal
           >
             Thời gian làm lễ
           </div>
@@ -215,13 +228,24 @@ export function WeddingInvitation({
               {timeline.map((item, i) => (
                 <li key={i} className="relative pb-10 last:pb-0">
                   <span className="absolute -left-[32.8px] top-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-[#b22f2f] bg-[#faf7f2] dark:bg-[#1c1917]" />
-                  <p className="text-lg font-bold text-[#b22f2f]">
+                  <p
+                    className="text-lg font-bold text-[#b22f2f]"
+                    data-wedding-reveal
+                  >
                     {item.time}
                   </p>
-                  <p className="font-semibold text-stone-800 dark:text-stone-100">
+                  <p
+                    className="font-semibold text-stone-800 dark:text-stone-100"
+                    data-wedding-reveal
+                  >
                     {item.title}
                   </p>
-                  <p className="text-sm text-muted-foreground">{item.detail}</p>
+                  <p
+                    className="text-sm text-muted-foreground"
+                    data-wedding-reveal
+                  >
+                    {item.detail}
+                  </p>
                 </li>
               ))}
             </ul>
@@ -234,14 +258,17 @@ export function WeddingInvitation({
         >
           <div
             className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f]`}
+            data-wedding-reveal
           >
             Xác nhận tham dự
           </div>
           <div
             className={`${robotoSlab.className} text-xl font-bold leading-relaxed w-full p-4`}
           >
-            {guest.title} {guest.name} thân mến, {guest.titleLow} sẽ đến chung
-            vui cùng {guest.selfLow} chứ ạ.
+            <p className="text-center" data-wedding-reveal>
+              {guest.title} {guest.name} thân mến, {guest.titleLow} sẽ đến chung
+              vui cùng {guest.selfLow} chứ ạ.
+            </p>
             <div className="flex flex-wrap items-center justify-center gap-4 mt-12">
               <ComingConfirmButton
                 guest={guest}
@@ -258,61 +285,46 @@ export function WeddingInvitation({
         >
           <div
             className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f]`}
+            data-wedding-reveal
           >
             Tặng lời chúc
           </div>
           <div
             className={`${robotoSlab.className} text-xl font-bold leading-relaxed w-full p-4`}
           >
-            {guest.title} có lời nào muốn tặng {guest.selfLow} không. Viết vào
-            đây nè!!!
+            <p className="mb-2 text-center" data-wedding-reveal>
+              {guest.title} có lời nào muốn tặng {guest.selfLow} không. Viết vào
+              đây nè!!!
+            </p>
             <WishForm guest={guest} />
           </div>
         </section>
 
-        <section id="thu-vien-anh" className="min-h-screen w-full scroll-mt-4 border-t border-[#b22f2f]/20 bg-[#faf7f2] py-16 md:py-24 flex flex-col items-center justify-start gap-8">
+        <section
+          id="thu-vien-anh"
+          className="min-h-screen w-full scroll-mt-4 overflow-x-visible border-t border-[#b22f2f]/20 bg-[#faf7f2] py-16 md:py-24 flex flex-col items-center justify-start gap-8"
+        >
           <div className="container-custom">
           <div
             className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f] text-center mb-12`}
+            data-wedding-reveal
           >
             Thư viện ảnh
           </div>
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
-              {gallery.items.map((img, i) => (
-                <div
-                  key={i}
-                  className="relative aspect-[4/5] overflow-hidden rounded-xl border border-primary/10 shadow-md dark:border-primary/20"
-                >
-                  <Image
-                    src={img.src}
-                    alt={img.alt}
-                    fill
-                    className="object-cover transition duration-500 hover:scale-105"
-                    sizes="(max-width:768px) 50vw, 33vw"
-                  />
-                </div>
-              ))}
-            </div>
+            <GalleryGridScrollFlyIn items={gallery.items} />
             <GalleryHorizontalMarquee items={gallery.items} />
             <GalleryHorizontalMarquee
               items={gallery.items}
               reverse
-              className="mt-4"
+              className="mt-2"
             />
           </div>
         </section>
 
         {/* Countdown */}
-        <section id="dem-nguoc" className="py-10">
-          <div className="container-custom max-w-2xl">
-            <h2 className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f] text-center mb-8`}>
-              Đếm ngược đến ngày vui
-            </h2>
-            <div className="mt-8">
-              <InviteCountdown />
-            </div>
-          </div>
-        </section>
+        <InviteCountdownSection
+          titleClassName={`${greatVibes.className} text-5xl font-bold text-[#b22f2f] text-center mb-8`}
+        />
 
         {/* Gallery */}
         {/* <section id="album" className="section-padding">
@@ -339,6 +351,7 @@ export function WeddingInvitation({
           </div>
         </section> */}
       </div>
+      </WeddingPageTextReveal>
 
       {/* <BackgroundPattern /> */}
 
