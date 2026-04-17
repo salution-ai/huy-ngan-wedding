@@ -103,11 +103,11 @@ export function WeddingInvitation({
     <div className="bg-[#faf7f2] text-foreground dark:bg-[#1c1917] dark:text-stone-100">
       <WeddingPageTextReveal>
       <AutoScrollOnIdle targetId="year-scroll" idleMs={5000} maxScrollY={40} />
-      <WishCta
+      {/* <WishCta
         wish={guest.wish ?? ""}
         targetId="tang-loi-chuc"
         startAfterId="thiep-moi"
-      />
+      /> */}
       <div className="w-full text-black">
         <OneScreenScrollGate targetId="year-scroll" maxScrollY={40}>
           <div className="relative flex min-h-screen justify-center items-center">

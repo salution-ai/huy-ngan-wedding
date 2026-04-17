@@ -93,7 +93,7 @@ export function InviteCountdownSection({
         >
           Đếm ngược đến ngày vui
         </h2>
-        <div className="mt-8">
+        <div className="mt-8 mb-12">
           <InviteCountdown onCountdownReady={() => setCountdownReady(true)} />
         </div>
       </div>
