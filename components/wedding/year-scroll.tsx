@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, MotionConfig } from "framer-motion";
 import { ScrollDownHint } from "@/components/wedding/scroll-down-hint";
 import { weddingContent } from "@/content/wedding";
-import { Playwrite_IE, Roboto_Slab } from "next/font/google";
+import { Luxurious_Script, Playwrite_IE, Roboto_Slab } from "next/font/google";
 
 type ImagesSlide = {
   kind: "images";
@@ -23,6 +23,12 @@ const robotoSlab = Roboto_Slab({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
   variable: "--font-roboto-slab",
+});
+
+const luxuriousScript = Luxurious_Script({
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-luxurious-script",
 });
 
 const playwrightIE = Playwrite_IE({
@@ -219,19 +225,19 @@ function Year2026Hero({ side }: { side?: "" | "groom" | "bride" }) {
       <motion.div
         variants={item}
         transition={{ duration: 0.55, ease: "easeOut" }}
-        className={`flex flex-col items-center justify-center gap-3 font-bold text-3xl py-2 ${playwrightIE.className}`}
+        className={`flex flex-col items-center justify-center gap-3 font-bold text-7xl leading-12 py-2 ${luxuriousScript.className} my-4`}
       >
         {isBrideSide ? (
           <>
-            <div>Nguyễn Thúy Ngân</div>
+            <div>Thúy Ngân</div>
             <div>&</div>
-            <div>Lê Đức Huy</div>
+            <div>Đức Huy</div>
           </>
         ) : (
           <>
-            <div>Lê Đức Huy</div>
+            <div>Đức Huy</div>
             <div>&</div>
-            <div>Nguyễn Thúy Ngân</div>
+            <div>Thúy Ngân</div>
           </>
         )}
       </motion.div>
