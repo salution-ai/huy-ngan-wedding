@@ -143,7 +143,7 @@ function Year2026Hero({ side }: { side?: "" | "groom" | "bride" }) {
   const isBrideSide = side === "bride";
 
   const groomParents = (
-    <div className="flex flex-1 flex-col items-center gap-1 text-center">
+    <div className="flex flex-1 flex-col items-center gap-1 text-center text-[14px]">
       <p>Nhà trai</p>
       <p className="font-bold">ÔNG LÊ HỮU MINH</p>
       <p className="font-bold">BÀ ĐÀO THỊ MINH</p>
@@ -152,7 +152,7 @@ function Year2026Hero({ side }: { side?: "" | "groom" | "bride" }) {
   );
 
   const brideParents = (
-    <div className="flex flex-1 flex-col items-center gap-1 text-center">
+    <div className="flex flex-1 flex-col items-center gap-1 text-center text-[14px]">
       <p>Nhà gái</p>
       <p className="font-bold">ÔNG NGUYỄN VĂN QUY</p>
       <p className="font-bold">BÀ ĐẶNG HẰNG MÂY</p>

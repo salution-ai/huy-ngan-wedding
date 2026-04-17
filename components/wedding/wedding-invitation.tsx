@@ -22,6 +22,17 @@ import { GalleryGridScrollFlyIn } from "@/components/wedding/gallery-grid-scroll
 import { WeddingPageTextReveal } from "@/components/wedding/wedding-page-text-reveal";
 import { WishList } from "@/components/wedding/wish-list";
 
+function pickRandomItems<T>(items: T[], count: number) {
+  if (count <= 0) return [];
+  if (items.length <= count) return items;
+  const a = items.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a.slice(0, count);
+}
+
 export type WeddingGuest = {
   row_number?: number;
   slug?: string;
@@ -85,6 +96,9 @@ export function WeddingInvitation({
     grateful: "",
     ...(guestProp ?? {}),
   };
+
+  const randomGalleryItems = pickRandomItems(gallery.items ?? [], 6);
+
   return (
     <div className="bg-[#faf7f2] text-foreground dark:bg-[#1c1917] dark:text-stone-100">
       <WeddingPageTextReveal>
@@ -293,13 +307,13 @@ export function WeddingInvitation({
           >
             Thư viện ảnh
           </div>
-            <GalleryGridScrollFlyIn items={gallery.items} />
+            <GalleryGridScrollFlyIn items={randomGalleryItems} />
             <GalleryHorizontalMarquee
-              items={gallery.items}
+              items={randomGalleryItems}
               className="lg:hidden"
             />
             <GalleryHorizontalMarquee
-              items={gallery.items}
+              items={randomGalleryItems}
               reverse
               className="mt-2 lg:hidden"
             />

@@ -110,6 +110,266 @@ export const weddingContent = {
         src: "/album/6.JPG",
         alt: "Khoảnh khắc 6",
       },
+      {
+        src: "/album/7.JPG",
+        alt: "Khoảnh khắc 7",
+      },
+      {
+        src: "/album/8.JPG",
+        alt: "Khoảnh khắc 8",
+      },
+      {
+        src: "/album/9.JPG",
+        alt: "Khoảnh khắc 9",
+      },
+      {
+        src: "/album/10.JPG",
+        alt: "Khoảnh khắc 10",
+      },
+      {
+        src: "/album/11.JPG",
+        alt: "Khoảnh khắc 11",
+      },
+      {
+        src: "/album/12.JPG",
+        alt: "Khoảnh khắc 12",
+      },
+      {
+        src: "/album/13.JPG",
+        alt: "Khoảnh khắc 13",
+      },
+      {
+        src: "/album/14.JPG",
+        alt: "Khoảnh khắc 14",
+      },
+      {
+        src: "/album/15.JPG",
+        alt: "Khoảnh khắc 15",
+      },
+      {
+        src: "/album/16.JPG",
+        alt: "Khoảnh khắc 16",
+      },
+      {
+        src: "/album/17.JPG",
+        alt: "Khoảnh khắc 17",
+      },
+      {
+        src: "/album/18.JPG",
+        alt: "Khoảnh khắc 18",
+      },
+      {
+        src: "/album/19.JPG",
+        alt: "Khoảnh khắc 19",
+      },
+      {
+        src: "/album/20.JPG",
+        alt: "Khoảnh khắc 20",
+      },
+      {
+        src: "/album/21.JPG",
+        alt: "Khoảnh khắc 21",
+      },
+      {
+        src: "/album/22.JPG",
+        alt: "Khoảnh khắc 22",
+      },
+      {
+        src: "/album/23.JPG",
+        alt: "Khoảnh khắc 23",
+      },
+      {
+        src: "/album/24.JPG",
+        alt: "Khoảnh khắc 24",
+      },
+      { 
+        src: "/album/25.JPG",
+        alt: "Khoảnh khắc 25",
+      },
+      {
+        src: "/album/26.JPG",
+        alt: "Khoảnh khắc 26",
+      },
+      {
+        src: "/album/27.JPG",
+        alt: "Khoảnh khắc 27",
+      },
+      {
+        src: "/album/28.JPG",
+        alt: "Khoảnh khắc 28",
+      },
+      {
+        src: "/album/29.JPG",
+        alt: "Khoảnh khắc 29",
+      },
+      {
+        src: "/album/30.JPG",
+        alt: "Khoảnh khắc 30",
+      },
+      {
+        src: "/album/31.JPG",
+        alt: "Khoảnh khắc 31",
+      },
+      {
+        src: "/album/32.JPG",
+        alt: "Khoảnh khắc 32",
+      },
+      {
+        src: "/album/33.JPG",
+        alt: "Khoảnh khắc 33",
+      },
+      {
+        src: "/album/34.JPG",
+        alt: "Khoảnh khắc 34",
+      },
+      {
+        src: "/album/35.JPG",
+        alt: "Khoảnh khắc 35",
+      },
+      {
+        src: "/album/36.JPG",
+        alt: "Khoảnh khắc 36",
+      },
+      {
+        src: "/album/37.JPG",
+        alt: "Khoảnh khắc 37",
+      },
+      {
+        src: "/album/38.JPG",
+        alt: "Khoảnh khắc 38",
+      },
+      {
+        src: "/album/39.JPG",
+        alt: "Khoảnh khắc 39",
+      },
+      {
+        src: "/album/40.JPG",
+        alt: "Khoảnh khắc 40",
+      },
+      {
+        src: "/album/41.JPG",
+        alt: "Khoảnh khắc 41",
+      },
+      {
+        src: "/album/42.JPG",
+        alt: "Khoảnh khắc 42",
+      },
+      {
+        src: "/album/43.JPG",
+        alt: "Khoảnh khắc 43",
+      },
+      {
+        src: "/album/44.JPG",
+        alt: "Khoảnh khắc 44",
+      },
+      {
+        src: "/album/45.JPG",
+        alt: "Khoảnh khắc 45",
+      },
+      {
+        src: "/album/46.JPG",
+        alt: "Khoảnh khắc 46",
+      },
+      {
+        src: "/album/47.JPG",
+        alt: "Khoảnh khắc 47",
+      },
+      {
+        src: "/album/48.JPG",
+        alt: "Khoảnh khắc 48",
+      },
+      {
+        src: "/album/49.JPG",
+        alt: "Khoảnh khắc 49",
+      },
+      {
+        src: "/album/50.JPG",
+        alt: "Khoảnh khắc 50",
+      },
+      {
+        src: "/album/51.JPG",
+        alt: "Khoảnh khắc 51",
+      },
+      {
+        src: "/album/52.JPG",
+        alt: "Khoảnh khắc 52",
+      },
+      {
+        src: "/album/53.JPG",
+        alt: "Khoảnh khắc 53",
+      },
+      {
+        src: "/album/54.JPG",
+        alt: "Khoảnh khắc 54",
+      },
+      {
+        src: "/album/55.JPG",
+        alt: "Khoảnh khắc 55",
+      },
+      {
+        src: "/album/56.JPG",
+        alt: "Khoảnh khắc 56",
+      },
+      {
+        src: "/album/57.JPG",
+        alt: "Khoảnh khắc 57",
+      },
+      {
+        src: "/album/58.JPG",
+        alt: "Khoảnh khắc 58",
+      },
+      {
+        src: "/album/59.JPG",
+        alt: "Khoảnh khắc 59",
+      },
+      {
+        src: "/album/60.JPG",
+        alt: "Khoảnh khắc 60",
+      },
+      {
+        src: "/album/61.JPG",
+        alt: "Khoảnh khắc 61",
+      },
+      {
+        src: "/album/62.JPG",
+        alt: "Khoảnh khắc 62",
+      },
+      {
+        src: "/album/63.JPG",
+        alt: "Khoảnh khắc 63",
+      },
+      {
+        src: "/album/64.JPG",
+        alt: "Khoảnh khắc 64",
+      },
+      {
+        src: "/album/65.JPG",
+        alt: "Khoảnh khắc 65",
+      },
+      {
+        src: "/album/66.JPG",
+        alt: "Khoảnh khắc 66",
+      },
+      {
+        src: "/album/67.JPG",
+        alt: "Khoảnh khắc 67",
+      },
+      {
+        src: "/album/68.JPG",
+        alt: "Khoảnh khắc 68",
+      },
+      {
+        src: "/album/69.JPG",
+        alt: "Khoảnh khắc 69",
+      },
+      {
+        src: "/album/70.JPG",
+        alt: "Khoảnh khắc 70",
+      },
+      {
+        src: "/album/71.JPG",
+        alt: "Khoảnh khắc 71",
+      },
     ],
   },
 

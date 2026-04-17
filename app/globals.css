@@ -194,12 +194,18 @@
 }
 
 .side-gallery-track {
-  animation: sideGalleryScroll 26s linear infinite;
+  animation: sideGalleryScroll 360s linear infinite;
   will-change: transform;
 }
 
 .side-gallery-track.reverse {
   animation-direction: reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .side-gallery-track {
+    animation: none;
+  }
 }
 
 /* Đảm bảo các logo có khoảng cách đều nhau */
