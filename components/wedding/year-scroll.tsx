@@ -364,7 +364,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
       "2018": { top: "/gallery/2018.jpg", bottom: "/gallery/2018%20(2).JPG" },
       "2019": { top: "/gallery/2019.JPG", bottom: "/gallery/2019%20(2).jpg" },
       "2020": { top: "/gallery/2020.JPG", bottom: "/gallery/2020%20(2).JPG" },
-      "2021": { top: "/gallery/2021.jpeg", bottom: "/gallery/2021%20(2).JPG" },
+      "2021": { top: "/gallery/2021.jpg", bottom: "/gallery/2021%20(2).JPG" },
       "2022": { top: "/gallery/2022.jpg", bottom: "/gallery/2022%20(2).jpg" },
       "2023": { top: "/gallery/2023.jpg", bottom: "/gallery/2023%20(2).jpg" },
       "2024": { top: "/gallery/2024.jpg", bottom: "/gallery/2024%20(2).JPG" },
