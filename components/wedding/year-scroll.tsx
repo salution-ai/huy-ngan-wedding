@@ -453,7 +453,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
     const byYear: Record<string, string[]> = {
       "2016": ["/gallery/2016.jpg", "/gallery/2016%20(2).jpg"],
       "2017": ["/gallery/2017.jpg", "/gallery/2017%20(2).JPG"],
-      "2018": ["/gallery/2018.JPG", "/gallery/2018%20(2).JPG", "/gallery/2018%20(3).JPG"],
+      "2018": ["/gallery/2018.JPG", "/gallery/2018%20(2).JPG", "/gallery/2018%20(3).JPG"] ,
       "2019": ["/gallery/2019.JPG", "/gallery/2019%20(2).jpg"],
       "2020": ["/gallery/2020.JPG", "/gallery/2020%20(2).JPG"],
       "2021": ["/gallery/2021%20(2).JPG"],
