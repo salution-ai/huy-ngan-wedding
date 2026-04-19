@@ -7,6 +7,7 @@ import {
   Great_Vibes,
   Playwrite_PE,
   Roboto_Slab,
+  Luxurious_Script,
 } from "next/font/google";
 import { ScrollDownHint } from "@/components/wedding/scroll-down-hint";
 import { YearScroll } from "@/components/wedding/year-scroll";
@@ -65,6 +66,12 @@ const playwriteIE = Playwrite_IE({
   variable: "--font-playwrite-ie",
 });
 
+const luxuriousScript = Luxurious_Script({
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-luxurious-script",
+});
+
 const greatVibes = Great_Vibes({
   weight: ["400"],
   subsets: ["latin"],
@@ -102,17 +109,20 @@ export function WeddingInvitation({
   return (
     <div className="bg-[#faf7f2] text-foreground dark:bg-[#1c1917] dark:text-stone-100">
       <WeddingPageTextReveal>
-      <AutoScrollOnIdle targetId="year-scroll" idleMs={5000} maxScrollY={40} />
+      <AutoScrollOnIdle targetId="thiep-moi" idleMs={5000} maxScrollY={40} />
       {/* <WishCta
         wish={guest.wish ?? ""}
         targetId="tang-loi-chuc"
         startAfterId="thiep-moi"
       /> */}
       <div className="w-full text-black">
-        <OneScreenScrollGate targetId="year-scroll" maxScrollY={40}>
-          <div className="relative flex min-h-screen justify-center items-center">
+        <OneScreenScrollGate targetId="thiep-moi" maxScrollY={40}>
+          <div
+            id="invite-hero"
+            className="relative flex min-h-screen justify-center items-center"
+          >
             {/* Background */}
-            <div className="absolute inset-0 bg-[url('/gallery/hero.JPG')] bg-cover bg-center"></div>
+            <div className="absolute inset-0 bg-[url('/gallery/hero4.JPG')] bg-cover bg-center"></div>
 
             {/* Overlay màu */}
             <div className="absolute inset-0 bg-black/50"></div>
@@ -130,7 +140,7 @@ export function WeddingInvitation({
                   Đây là thiệp cưới của
                 </p>
                 <p
-                  className={`text-2xl font-bold ${playwriteIE.className}`}
+                  className={`text-5xl font-bold ${luxuriousScript.className}`}
                   data-wedding-reveal
                 >
                   Thúy Ngân và Đức Huy
@@ -141,7 +151,7 @@ export function WeddingInvitation({
               </div>
               <div className="flex justify-center items-center">
                 <a
-                  href="#year-scroll"
+                  href="#thiep-moi"
                   data-wedding-reveal
                   className="invite-open-btn-pulse inline-flex items-center justify-center rounded-md bg-transparent px-4 py-2 text-white border border-white shadow-md transition-shadow hover:shadow-lg"
                 >
@@ -155,20 +165,8 @@ export function WeddingInvitation({
             </div>
           </div>
         </OneScreenScrollGate>
-        <div
-          id="year-scroll"
-          data-wedding-reveal-skip
-          className={`font-archivo-black ${archivoBlack.className}`}
-        >
-          <YearScroll
-            side={guest.side}
-            year2026Content={
-              <div className="container-custom mx-auto max-w-3xl" />
-            }
-          />
-        </div>
 
-        <SectionScrollSnap snapUpToId="year-scroll">
+        <SectionScrollSnap snapUpToId="invite-hero">
           <section
             id="thiep-moi"
             className="min-h-screen w-full scroll-mt-4 border-t border-[#b22f2f]/20 bg-[#faf7f2] px-4 py-16 md:px-6 md:py-24 flex flex-col items-center justify-start gap-8"
@@ -183,6 +181,16 @@ export function WeddingInvitation({
               className={`${playwritePE.className} text-xl font-normal leading-relaxed text-center`}
               data-wedding-reveal
             >
+              {guest.title} {guest.name} thân mến,
+              <br />
+              Khi {guest.titleLow} đang đọc những dòng này, cũng là lúc ngày trọng đại của {guest.selfLow} đang đến rất gần. Sự hiện diện của {guest.titleLow} trong khoảnh khắc ấy không chỉ là niềm vui, mà còn là một phần ý nghĩa đặc biệt mà {guest.selfLow} luôn trân trọng.
+              <br />
+
+              Trước khi cùng nhau bước vào ngày hạnh phúc đó, {guest.selfLow} muốn rủ {guest.titleLow} cùng “du hành thời gian” một chút — quay lại hành trình 10 năm bên nhau của {guest.selfLow} nhé....
+              <br />
+
+              {/* đến dự buổi lễ thành hôn của {guest.selfLow}.
+              <br />
               {guest.self} xin trân trọng kính mời {guest.titleLow} {guest.name}{" "}
               đến dự buổi lễ thành hôn của {guest.selfLow}.
               <br />
@@ -190,7 +198,7 @@ export function WeddingInvitation({
               {guest.self} xin cảm ơn {guest.titleLow} đã dành thời gian quý báu
               của mình để có mặt tại buổi lễ đặc biệt của {guest.selfLow}. Sự hiện
               diện của {guest.titleLow} là niềm vinh hạnh lớn đối với{" "}
-              {guest.selfLow}.
+              {guest.selfLow}. */}
               {guest.grateful != null && guest.grateful !== "" ? (
                 <>
                   <br />
@@ -204,6 +212,19 @@ export function WeddingInvitation({
             </div>
           </section>
         </SectionScrollSnap>
+
+        <div
+          id="year-scroll"
+          data-wedding-reveal-skip
+          className={`font-archivo-black ${archivoBlack.className}`}
+        >
+          <YearScroll
+            side={guest.side}
+            year2026Content={
+              <div className="container-custom mx-auto max-w-3xl" />
+            }
+          />
+        </div>
 
         <section
           id="thoi-gian-va-dia-diem"

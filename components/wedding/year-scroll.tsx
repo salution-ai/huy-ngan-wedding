@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, MotionConfig } from "framer-motion";
 import { ScrollDownHint } from "@/components/wedding/scroll-down-hint";
@@ -10,8 +10,8 @@ import { Luxurious_Script, Playwrite_IE, Roboto_Slab } from "next/font/google";
 type ImagesSlide = {
   kind: "images";
   year: string;
-  topImageSrc: string;
-  bottomImageSrc: string;
+  /** Danh sách ảnh (1, 2, 3, …) — bố cục tự căn để lấp đủ một màn hình. */
+  imageSrcs: string[];
 };
 
 type FinalSlide = {
@@ -40,6 +40,73 @@ type YearSlide = ImagesSlide | FinalSlide;
 /** Thời gian hiển thị đầy đủ số năm 2026 trước khi bắt đầu mờ (ms). */
 const FINAL_YEAR_DIGITS_VISIBLE_MS = 1500;
 
+/** Chia N ảnh thành các hàng (số ô mỗi hàng) để lấp viewport: cân đối, ưu tiên bố cục đẹp cho N nhỏ. */
+function groupImagesIntoRows(count: number): number[] {
+  if (count <= 0) return [];
+  if (count === 1) return [1];
+  if (count === 2) return [1, 1];
+  if (count === 3) return [1, 1, 1];
+  if (count === 4) return [2, 2];
+  if (count === 5) return [3, 2];
+  if (count === 6) return [3, 3];
+  if (count === 7) return [4, 3];
+  if (count === 8) return [4, 4];
+  if (count === 9) return [3, 3, 3];
+  const cols = Math.ceil(Math.sqrt(count));
+  const rows: number[] = [];
+  let remaining = count;
+  while (remaining > 0) {
+    const take = Math.min(cols, remaining);
+    rows.push(take);
+    remaining -= take;
+  }
+  return rows;
+}
+
+/** Vùng gradient (%) từ mép vào trong — càng lớn càng mềm; khớp vibe thiệp cũ ~18–22%. */
+const COLLAGE_EDGE_FADE_PCT = 20;
+/** Chồng lấn theo chiều dọc (vh) giữa các hàng — vùng giao để fade hòa trộn. */
+const COLLAGE_ROW_OVERLAP_VH = 4.5;
+/** Chồng lấn theo chiều ngang (%) giữa các cột trong một hàng. */
+const COLLAGE_COL_OVERLAP_PCT = 7;
+
+/** Mask giao nhiều lớp: mép có láng giềng mờ dần, mép ngoài cùng giữ nguyên. */
+function collageImageMaskStyle(edge: {
+  top: boolean;
+  right: boolean;
+  bottom: boolean;
+  left: boolean;
+}): CSSProperties {
+  const f = COLLAGE_EDGE_FADE_PCT;
+  const solidH = `linear-gradient(to bottom, black 0%, black 100%)`;
+  const solidV = `linear-gradient(to right, black 0%, black 100%)`;
+  const topGrad = edge.top
+    ? `linear-gradient(to bottom, transparent 0%, black ${f}%, black 100%)`
+    : solidH;
+  const bottomGrad = edge.bottom
+    ? `linear-gradient(to top, transparent 0%, black ${f}%, black 100%)`
+    : solidH;
+  const leftGrad = edge.left
+    ? `linear-gradient(to right, transparent 0%, black ${f}%, black 100%)`
+    : solidV;
+  const rightGrad = edge.right
+    ? `linear-gradient(to left, transparent 0%, black ${f}%, black 100%)`
+    : solidV;
+
+  const layers = [topGrad, bottomGrad, leftGrad, rightGrad].join(", ");
+
+  return {
+    WebkitMaskImage: layers,
+    WebkitMaskComposite: "source-in",
+    WebkitMaskRepeat: "no-repeat",
+    WebkitMaskSize: "100% 100%",
+    maskImage: layers,
+    maskComposite: "intersect",
+    maskRepeat: "no-repeat",
+    maskSize: "100% 100%",
+  };
+}
+
 function preloadImage(src: string): Promise<void> {
   return new Promise((resolve) => {
     const img = new Image();
@@ -54,51 +121,70 @@ function preloadImage(src: string): Promise<void> {
   });
 }
 
-function YearImageFrame({ slide }: { slide: ImagesSlide }) {
-  const overlapPct = 12;
+function YearImageCollage({ slide }: { slide: ImagesSlide }) {
+  const { imageSrcs } = slide;
+  if (imageSrcs.length === 0) {
+    return (
+      <div className="relative h-screen w-full bg-neutral-950" aria-hidden />
+    );
+  }
+  const rows = groupImagesIntoRows(imageSrcs.length);
+  const numRows = rows.length;
+  let cursor = 0;
+
   return (
     <div className="relative h-screen w-full">
-      <div className="relative h-screen w-full overflow-hidden bg-neutral-950">
-        <div
-          className="absolute left-0 top-0 w-full"
-          style={{ height: `${50 + overlapPct / 2}%` }}
-        >
-          <img
-            src={slide.topImageSrc}
-            alt="Huy Ngân Wedding"
-            className="h-full w-full object-cover"
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-            style={{
-              WebkitMaskImage:
-                "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)",
-              maskImage:
-                "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)",
-            }}
-          />
-        </div>
-
-        <div
-          className="absolute bottom-0 left-0 w-full"
-          style={{ height: `${50 + overlapPct / 2}%` }}
-        >
-          <img
-            src={slide.bottomImageSrc}
-            alt="Huy Ngân Wedding"
-            className="h-full w-full object-cover"
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-            style={{
-              WebkitMaskImage:
-                "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)",
-              maskImage:
-                "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)",
-            }}
-          />
-        </div>
-
+      <div className="relative flex h-screen min-h-0 w-full flex-col overflow-hidden bg-neutral-950">
+        {rows.map((colsInRow, rowIdx) => {
+          const slice = imageSrcs.slice(cursor, cursor + colsInRow);
+          cursor += colsInRow;
+          const cols = slice.length;
+          return (
+            <div
+              key={rowIdx}
+              className="relative flex min-h-0 flex-1 flex-row"
+              style={{
+                zIndex: rowIdx,
+                marginTop:
+                  rowIdx > 0 ? `-${COLLAGE_ROW_OVERLAP_VH}vh` : undefined,
+              }}
+            >
+              {slice.map((src, colIdx) => {
+                const maskStyle = collageImageMaskStyle({
+                  top: rowIdx > 0,
+                  bottom: rowIdx < numRows - 1,
+                  left: colIdx > 0,
+                  right: colIdx < cols - 1,
+                });
+                return (
+                  <div
+                    key={`${rowIdx}-${colIdx}`}
+                    className="relative min-h-0 min-w-0 flex-1 overflow-hidden"
+                    style={{
+                      zIndex: colIdx,
+                      marginLeft:
+                        colIdx > 0
+                          ? `-${COLLAGE_COL_OVERLAP_PCT}%`
+                          : undefined,
+                    }}
+                  >
+                    <img
+                      src={src}
+                      alt="Huy Ngân Wedding"
+                      className="h-full w-full object-cover"
+                      loading="eager"
+                      decoding="async"
+                      fetchPriority={
+                        rowIdx === 0 && colIdx === 0 ? "high" : "auto"
+                      }
+                      style={maskStyle}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
         <div className="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-t from-black to-transparent" />
       </div>
 
@@ -178,7 +264,7 @@ function Year2026Hero({ side }: { side?: "" | "groom" | "bride" }) {
       className="relative min-h-screen w-full bg-[#faf7f2] py-8 font-wedding-serif text-[#b22f2f] flex flex-col items-center justify-between"
     >
       <div
-        className="pointer-events-none absolute inset-0 bg-[url('/gallery/hero.JPG')] bg-cover bg-center opacity-[0.32]"
+        className="pointer-events-none absolute inset-0 bg-[url('/gallery/hero3.JPG')] bg-cover bg-center opacity-[0.22]"
         aria-hidden
       />
       <motion.div
@@ -364,25 +450,24 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
   const idleTimerRef = useRef<number | null>(null);
 
   const slides = useMemo<YearSlide[]>(() => {
-    const byYear: Record<string, { top: string; bottom: string }> = {
-      "2016": { top: "/gallery/2016.jpg", bottom: "/gallery/2016%20(2).jpg" },
-      "2017": { top: "/gallery/2017.jpg", bottom: "/gallery/2017%20(2).JPG" },
-      "2018": { top: "/gallery/2018.jpg", bottom: "/gallery/2018%20(2).JPG" },
-      "2019": { top: "/gallery/2019.JPG", bottom: "/gallery/2019%20(2).jpg" },
-      "2020": { top: "/gallery/2020.JPG", bottom: "/gallery/2020%20(2).JPG" },
-      "2021": { top: "/gallery/2021.jpg", bottom: "/gallery/2021%20(2).JPG" },
-      "2022": { top: "/gallery/2022.jpg", bottom: "/gallery/2022%20(2).jpg" },
-      "2023": { top: "/gallery/2023.jpg", bottom: "/gallery/2023%20(2).jpg" },
-      "2024": { top: "/gallery/2024.jpg", bottom: "/gallery/2024%20(2).JPG" },
-      "2025": { top: "/gallery/2025.JPG", bottom: "/gallery/2025%20(2).JPG" },
+    const byYear: Record<string, string[]> = {
+      "2016": ["/gallery/2016.jpg", "/gallery/2016%20(2).jpg"],
+      "2017": ["/gallery/2017.jpg", "/gallery/2017%20(2).JPG"],
+      "2018": ["/gallery/2018.JPG", "/gallery/2018%20(2).JPG", "/gallery/2018%20(3).JPG"],
+      "2019": ["/gallery/2019.JPG", "/gallery/2019%20(2).jpg"],
+      "2020": ["/gallery/2020.JPG", "/gallery/2020%20(2).JPG"],
+      "2021": ["/gallery/2021%20(2).JPG"],
+      "2022": ["/gallery/2022.JPG"],
+      "2023": ["/gallery/2023.jpg", "/gallery/2023%20(2).jpg"],
+      "2024": ["/gallery/2024 (old).JPG", "/gallery/2024.JPG"],
+      "2025": ["/gallery/2025.JPG", "/gallery/2025%20(3).JPG"],
     };
 
     const imageSlides: ImagesSlide[] = Object.entries(byYear).map(
-      ([year, src]) => ({
-        kind: "images",
+      ([year, imageSrcs]) => ({
+        kind: "images" as const,
         year,
-        topImageSrc: src.top,
-        bottomImageSrc: src.bottom,
+        imageSrcs,
       }),
     );
 
@@ -401,7 +486,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
     const urls = Array.from(
       new Set(
         slides.flatMap((s) =>
-          s.kind === "images" ? [s.topImageSrc, s.bottomImageSrc] : [],
+          s.kind === "images" ? s.imageSrcs : [],
         ),
       ),
     );
@@ -448,9 +533,12 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
       clearIdle();
       // If user is already at final year (2026), do not auto-scroll/auto-advance.
       if (index >= maxIndex) return;
+      // Chỉ đếm idle khi người dùng đã cuộn tới khối year scroll (đủ phần nhìn thấy).
+      if (!isActiveInViewport()) return;
       idleTimerRef.current = window.setTimeout(() => {
         // If user stays too long without scrolling, auto-advance.
         if (lockRef.current) return;
+        if (!isActiveInViewport()) return;
         step(1);
       }, 5000);
     };
@@ -544,10 +632,31 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
       passive: false,
       capture: true,
     });
-    scheduleIdleAdvance();
+
+    let prevViewportActive = false;
+    const onIntersect: IntersectionObserverCallback = () => {
+      const active = isActiveInViewport();
+      if (active === prevViewportActive) return;
+      prevViewportActive = active;
+      if (active) {
+        scheduleIdleAdvance();
+      } else {
+        clearIdle();
+      }
+    };
+    const io = new IntersectionObserver(onIntersect, {
+      root: null,
+      threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+    });
+    io.observe(el);
+
+    if (isActiveInViewport()) {
+      scheduleIdleAdvance();
+    }
 
     return () => {
       clearIdle();
+      io.disconnect();
       window.removeEventListener("wheel", onWheel, true);
       window.removeEventListener("touchstart", onTouchStart, true);
       window.removeEventListener("touchmove", onTouchMove, true);
@@ -599,7 +708,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
             className={isFinalYear ? "relative w-full" : "absolute inset-0"}
           >
             {slide.kind === "images" ? (
-              <YearImageFrame slide={slide} />
+              <YearImageCollage slide={slide} />
             ) : (
               <>
                 <div className="relative min-h-screen w-full">
