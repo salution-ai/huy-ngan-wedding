@@ -457,9 +457,9 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
       "2019": ["/gallery/2019.JPG", "/gallery/2019%20(2).jpg"],
       "2020": ["/gallery/2020.JPG", "/gallery/2020%20(2).JPG"],
       "2021": ["/gallery/2021%20(2).JPG"],
-      "2022": ["/gallery/2022.JPG"],
+      "2022": ["/gallery/2022.jpg"],
       "2023": ["/gallery/2023.jpg", "/gallery/2023%20(2).jpg"],
-      "2024": ["/gallery/2024 (old).JPG", "/gallery/2024.JPG"],
+      "2024": ["/gallery/2024 (old).jpg", "/gallery/2024.jpg"],
       "2025": ["/gallery/2025.JPG", "/gallery/2025%20(3).JPG"],
     };
 
