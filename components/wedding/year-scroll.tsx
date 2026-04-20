@@ -469,6 +469,11 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
   const wheelAccumRef = useRef(0);
   const lockRef = useRef(false);
   const idleTimerRef = useRef<number | null>(null);
+  // When we transition into the final year (2026) inside iOS in-app browsers
+  // (notably Messenger), native scroll can remain "stuck" if any non-passive
+  // touch listeners are still attached on window. We use this flag to release
+  // control immediately during the transition.
+  const releaseNativeScrollRef = useRef(false);
 
   const slides = useMemo<YearSlide[]>(() => {
     const byYear: Record<string, string[]> = {
@@ -504,6 +509,10 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
   const isFinalYear = slide.kind === "final";
 
   useEffect(() => {
+    if (index < maxIndex) releaseNativeScrollRef.current = false;
+  }, [index, maxIndex]);
+
+  useEffect(() => {
     const urls = Array.from(
       new Set(
         slides.flatMap((s) =>
@@ -523,7 +532,19 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
     // don't call preventDefault. When the user reaches the final year (2026),
     // we want to fully "release" scroll control back to the page.
     const shouldInterceptScroll = index < maxIndex;
-    const shouldAllowBackFromFinalYear = index === maxIndex;
+    const ua = typeof navigator !== "undefined" ? navigator.userAgent ?? "" : "";
+    const isIOS =
+      /iPhone|iPad|iPod/i.test(ua) ||
+      // iPadOS reports itself as Mac; detect via touch points.
+      (typeof navigator !== "undefined" &&
+        navigator.platform === "MacIntel" &&
+        (navigator.maxTouchPoints ?? 0) > 1);
+    const isFBInApp = /FBAN|FBAV|FB_IAB/i.test(ua);
+    const isMessengerInApp =
+      /Messenger/i.test(ua) || /FBAN\/Messenger/i.test(ua) || /MESSENGER/i.test(ua);
+    const isIOSMessengerInApp = isIOS && isFBInApp && isMessengerInApp;
+
+    const shouldAllowBackFromFinalYear = index === maxIndex && !isIOSMessengerInApp;
 
     const isActiveInViewport = () => {
       const rect = el.getBoundingClientRect();
@@ -541,6 +562,16 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
       setIndex((prev) => {
         const next = Math.max(0, Math.min(maxIndex, prev + dir));
         if (next === prev) return prev;
+        if (next === maxIndex && isIOSMessengerInApp) {
+          releaseNativeScrollRef.current = true;
+          // Immediately detach window-level listeners; do NOT wait for effect cleanup.
+          // This prevents the "need to scroll up to prime" bug on iOS Messenger.
+          if (shouldInterceptScroll) {
+            window.removeEventListener("wheel", onWheel, true);
+            window.removeEventListener("touchstart", onTouchStart, true);
+            window.removeEventListener("touchmove", onTouchMove, true);
+          }
+        }
         lockRef.current = true;
         window.setTimeout(() => {
           lockRef.current = false;
@@ -574,6 +605,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
     const onWheel = (e: WheelEvent) => {
       if (!isActiveInViewport()) return;
       scheduleIdleAdvance();
+      if (releaseNativeScrollRef.current) return;
       if (lockRef.current) {
         e.preventDefault();
         return;
@@ -627,6 +659,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
       if (!shouldInterceptScroll) return;
       if (!isActiveInViewport()) return;
       scheduleIdleAdvance();
+      if (releaseNativeScrollRef.current) return;
       if (lockRef.current) {
         e.preventDefault();
         return;
@@ -814,7 +847,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
                 <div className="relative min-h-screen w-full">
                   <Year2026Hero side={side} />
                 </div>
-                {/* {year2026Content != null && year2026Content !== false ? (
+                {year2026Content != null && year2026Content !== false ? (
                   <motion.div
                     initial={false}
                     animate={{
@@ -826,7 +859,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
                   >
                     {year2026Content}
                   </motion.div>
-                ) : null} */}
+                ) : null}
               </>
             )}
           </motion.div>
