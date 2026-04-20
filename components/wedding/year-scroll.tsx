@@ -552,6 +552,14 @@ export function YearScroll({ side }: YearScrollProps) {
         if (next === prev) return prev;
         if (next === maxIndex) {
           releaseNativeScrollRef.current = true;
+          // Critical for Messenger in-app webview: remove the window-level
+          // non-passive touch listeners immediately, otherwise native scroll can
+          // remain "stuck" until another gesture happens.
+          if (isMessengerInApp && shouldInterceptScroll) {
+            window.removeEventListener("wheel", onWheel, true);
+            window.removeEventListener("touchstart", onTouchStart, true);
+            window.removeEventListener("touchmove", onTouchMove, true);
+          }
         }
         lockRef.current = true;
         window.setTimeout(() => {
