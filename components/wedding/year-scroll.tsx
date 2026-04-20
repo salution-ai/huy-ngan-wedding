@@ -463,7 +463,7 @@ export type YearScrollProps = {
   side?: "" | "groom" | "bride";
 };
 
-export function YearScroll({ year2026Content, side }: YearScrollProps) {
+export function YearScroll({ side }: YearScrollProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const touchStartYRef = useRef<number | null>(null);
   const wheelAccumRef = useRef(0);
@@ -523,7 +523,12 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
     // don't call preventDefault. When the user reaches the final year (2026),
     // we want to fully "release" scroll control back to the page.
     const shouldInterceptScroll = index < maxIndex;
-    const shouldAllowBackFromFinalYear = index === maxIndex;
+    const isMessengerInApp =
+      typeof navigator !== "undefined" &&
+      /Messenger|FBAN\/Messenger|FB_IAB\/MESSENGER|FBAV|FBAN/i.test(
+        navigator.userAgent ?? "",
+      );
+    const shouldAllowBackFromFinalYear = index === maxIndex && !isMessengerInApp;
 
     const isActiveInViewport = () => {
       const rect = el.getBoundingClientRect();
@@ -663,7 +668,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
       });
       window.addEventListener("touchmove", onTouchMove, {
         passive: false,
-        // capture: true,
+        capture: true,
       });
     } else {
       // Final year (2026): do NOT attach non-passive touch listeners on window.
@@ -767,19 +772,15 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
 
   /** Màn 2026: hiện số năm một lúc rồi mờ dần. */
   const [finalYearDigitsOpacity, setFinalYearDigitsOpacity] = useState(1);
-  const [finalContentVisible, setFinalContentVisible] = useState(false);
 
   useEffect(() => {
     if (!isFinalYear) {
       setFinalYearDigitsOpacity(1);
-      setFinalContentVisible(false);
       return;
     }
     setFinalYearDigitsOpacity(1);
-    setFinalContentVisible(false);
     const t = window.setTimeout(() => {
       setFinalYearDigitsOpacity(0);
-      setFinalContentVisible(true);
     }, FINAL_YEAR_DIGITS_VISIBLE_MS);
     return () => window.clearTimeout(t);
   }, [isFinalYear]);
