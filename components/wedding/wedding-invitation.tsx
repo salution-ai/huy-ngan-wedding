@@ -108,6 +108,13 @@ export function WeddingInvitation({
   };
 
   const randomGalleryItems = pickRandomItems(gallery.items ?? [], 6);
+  const randomDesktopGalleryItems = pickRandomItems(gallery.items ?? [], 12);
+
+  // vd: mobile khi width < 1024px (theo breakpoint lg của Tailwind)
+  const isMobile =
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 1023px)").matches
+      : false;
 
   return (
     <GuestAliasSyncProvider>
@@ -369,13 +376,17 @@ export function WeddingInvitation({
                 >
                   Thư viện ảnh
                 </div>
-                <GalleryGridScrollFlyIn items={randomGalleryItems} />
+                <GalleryGridScrollFlyIn
+                  items={
+                    isMobile ? randomGalleryItems : randomDesktopGalleryItems
+                  }
+                />
                 <GalleryHorizontalMarquee
-                  items={randomGalleryItems}
+                  items={gallery.items}
                   className="lg:hidden"
                 />
                 <GalleryHorizontalMarquee
-                  items={randomGalleryItems}
+                  items={gallery.items}
                   reverse
                   className="mt-2 lg:hidden"
                 />
@@ -391,14 +402,16 @@ export function WeddingInvitation({
               className={`${greatVibes.className} text-3xl  text-center pb-12 px-4`}
               data-wedding-reveal
             >
-              Một lần nữa, {guest.selfLow} xin kính mời {guest.titleLow} {guest.name} đến dự buổi lễ thành hôn của {guest.selfLow}.
+              Một lần nữa, {guest.selfLow} xin kính mời {guest.titleLow}{" "}
+              {guest.name} đến dự buổi lễ thành hôn của {guest.selfLow}.
               <br />
-              Rất hân hạnh được đón tiếp và xin cảm ơn {guest.titleLow} rất nhiều vì đã dành thời gian quý báu
-              của mình để có mặt tại buổi lễ đặc biệt của {guest.selfLow}. Sự hiện
-              diện của {guest.titleLow} là niềm vinh hạnh lớn đối với {guest.selfLow}💖💖
-              <br/>
-              <br/>
-              <br/>
+              Rất hân hạnh được đón tiếp và xin cảm ơn {guest.titleLow} rất
+              nhiều vì đã dành thời gian quý báu của mình để có mặt tại buổi lễ
+              đặc biệt của {guest.selfLow}. Sự hiện diện của {guest.titleLow} là
+              niềm vinh hạnh lớn đối với {guest.selfLow}💖💖
+              <br />
+              <br />
+              <br />
             </div>
 
             {/* Gallery */}
