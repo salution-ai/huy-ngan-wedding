@@ -16,7 +16,6 @@ import { AutoScrollOnIdle } from "@/components/wedding/auto-scroll-on-idle";
 import { OneScreenScrollGate } from "@/components/wedding/one-screen-scroll-gate";
 import { SectionScrollSnap } from "@/components/wedding/section-scroll-snap";
 import { SectionDownScrollGate } from "@/components/wedding/section-down-scroll-gate";
-import { SectionUpScrollGate } from "@/components/wedding/section-up-scroll-gate";
 import { ComingConfirmButton } from "@/components/wedding/coming-confirm-button";
 import { ComingDeclineButton } from "@/components/wedding/coming-decline-button";
 import { ComingConfirmPublicForm } from "@/components/wedding/coming-confirm-public-form";
@@ -246,10 +245,6 @@ export function WeddingInvitation({
               id="thoi-gian-va-dia-diem"
               className="min-h-screen w-full scroll-mt-4 border-t border-[#b22f2f]/20 bg-[#faf7f2] px-4 py-16 md:px-6 md:py-24 flex flex-col items-center justify-start gap-8"
             >
-              <SectionUpScrollGate
-                sectionId="thoi-gian-va-dia-diem"
-                prevId="year-scroll"
-              />
               <div
                 className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f]`}
                 data-wedding-reveal
