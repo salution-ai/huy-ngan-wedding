@@ -1,20 +1,28 @@
 "use client"
 
 import gsap from "gsap"
-import { useCallback, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import type { WeddingGuest } from "@/components/wedding/wedding-invitation"
+import { useOptionalGuestAliasSync } from "@/components/wedding/guest-alias-sync"
 
 type Props = {
   guest: WeddingGuest
 }
 
 export function WishForm({ guest }: Props) {
+  const aliasSync = useOptionalGuestAliasSync()
+  const confirmNameForAlias = aliasSync?.confirmDisplayName ?? ""
   const initial = useMemo(() => guest.wish?.toString().trim() ?? "", [guest.wish])
   const initialAlias = useMemo(() => guest.name?.toString().trim() ?? "", [guest.name])
   const [alias, setAlias] = useState(initialAlias)
+
+  useEffect(() => {
+    const t = confirmNameForAlias.trim()
+    if (t) setAlias(t)
+  }, [confirmNameForAlias])
   const [wish, setWish] = useState(initial)
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">(
     "idle",

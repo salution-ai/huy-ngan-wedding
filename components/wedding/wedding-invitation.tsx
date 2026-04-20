@@ -16,12 +16,16 @@ import { WishCta } from "@/components/wedding/wish-cta";
 import { AutoScrollOnIdle } from "@/components/wedding/auto-scroll-on-idle";
 import { OneScreenScrollGate } from "@/components/wedding/one-screen-scroll-gate";
 import { SectionScrollSnap } from "@/components/wedding/section-scroll-snap";
+import { SectionDownScrollGate } from "@/components/wedding/section-down-scroll-gate";
+import { SectionUpScrollGate } from "@/components/wedding/section-up-scroll-gate";
 import { ComingConfirmButton } from "@/components/wedding/coming-confirm-button";
 import { ComingDeclineButton } from "@/components/wedding/coming-decline-button";
+import { ComingConfirmPublicForm } from "@/components/wedding/coming-confirm-public-form";
 import { GalleryHorizontalMarquee } from "@/components/wedding/gallery-horizontal-marquee";
 import { GalleryGridScrollFlyIn } from "@/components/wedding/gallery-grid-scroll-fly-in";
 import { WeddingPageTextReveal } from "@/components/wedding/wedding-page-text-reveal";
 import { WishList } from "@/components/wedding/wish-list";
+import { GuestAliasSyncProvider } from "@/components/wedding/guest-alias-sync";
 
 function pickRandomItems<T>(items: T[], count: number) {
   if (count <= 0) return [];
@@ -49,6 +53,8 @@ export type WeddingGuest = {
   wish?: string;
   joinAt?: string;
   declineNum?: string;
+  /** `true`/không gửi: nút xác nhận theo khách mời cá nhân. `false`: form tên + số người + webhook riêng. */
+  personal?: boolean;
 };
 
 const archivoBlack = Archivo_Black({
@@ -107,6 +113,7 @@ export function WeddingInvitation({
   const randomGalleryItems = pickRandomItems(gallery.items ?? [], 6);
 
   return (
+    <GuestAliasSyncProvider>
     <div className="bg-[#faf7f2] text-foreground dark:bg-[#1c1917] dark:text-stone-100">
       <WeddingPageTextReveal>
       <AutoScrollOnIdle targetId="thiep-moi" idleMs={5000} maxScrollY={40} />
@@ -171,6 +178,7 @@ export function WeddingInvitation({
             id="thiep-moi"
             className="min-h-screen w-full scroll-mt-4 border-t border-[#b22f2f]/20 bg-[#faf7f2] px-4 py-16 md:px-6 md:py-24 flex flex-col items-center justify-start gap-8"
           >
+            <SectionDownScrollGate sectionId="thiep-moi" nextId="year-scroll" />
             <div
               className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f]`}
               data-wedding-reveal
@@ -186,7 +194,7 @@ export function WeddingInvitation({
               Khi {guest.titleLow} đang đọc những dòng này, cũng là lúc ngày trọng đại của {guest.selfLow} đang đến rất gần. Sự hiện diện của {guest.titleLow} trong khoảnh khắc ấy không chỉ là niềm vui, mà còn là một phần ý nghĩa đặc biệt mà {guest.selfLow} luôn trân trọng.
               <br />
 
-              Trước khi cùng nhau bước vào ngày hạnh phúc đó, {guest.selfLow} muốn rủ {guest.titleLow} cùng “du hành thời gian” một chút — quay lại hành trình 10 năm bên nhau của {guest.selfLow} nhé....
+              Trước khi cùng nhau bước vào ngày hạnh phúc đó, {guest.selfLow} muốn mời {guest.titleLow} cùng “du hành thời gian” một chút — quay lại hành trình 10 năm bên nhau của {guest.selfLow} nhé....
               <br />
 
               {/* đến dự buổi lễ thành hôn của {guest.selfLow}.
@@ -230,6 +238,7 @@ export function WeddingInvitation({
           id="thoi-gian-va-dia-diem"
           className="min-h-screen w-full scroll-mt-4 border-t border-[#b22f2f]/20 bg-[#faf7f2] px-4 py-16 md:px-6 md:py-24 flex flex-col items-center justify-start gap-8"
         >
+          <SectionUpScrollGate sectionId="thoi-gian-va-dia-diem" prevId="year-scroll" />
           <div
             className={`${greatVibes.className} text-5xl font-bold text-[#b22f2f]`}
             data-wedding-reveal
@@ -280,17 +289,29 @@ export function WeddingInvitation({
           <div
             className={`${robotoSlab.className} text-xl font-bold leading-relaxed w-full p-4`}
           >
-            <p className="text-center" data-wedding-reveal>
-              {guest.title} {guest.name} thân mến, {guest.titleLow} sẽ đến chung
-              vui cùng {guest.selfLow} chứ ạ.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-4 mt-12">
-              <ComingConfirmButton
+            {guest.personal !== false ? (
+              <>
+                <p className="text-center" data-wedding-reveal>
+                  {guest.title} {guest.name} thân mến, {guest.titleLow} sẽ đến chung
+                  vui cùng {guest.selfLow} chứ ạ.
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-4 mt-12">
+                  <ComingConfirmButton
+                    guest={guest}
+                    className="bg-[#b22f2f] text-white"
+                  />
+                  <ComingDeclineButton
+                    guest={guest}
+                    className="bg-white text-[#b22f2f]"
+                  />
+                </div>
+              </>
+            ) : (
+              <ComingConfirmPublicForm
                 guest={guest}
-                className="bg-[#b22f2f] text-white"
+                className={`${robotoSlab.className} mt-4`}
               />
-              <ComingDeclineButton guest={guest} className="bg-white text-[#b22f2f]" />
-            </div>
+            )}
           </div>
         </section>
 
@@ -377,5 +398,6 @@ export function WeddingInvitation({
 
       {/* Hero */}
     </div>
+    </GuestAliasSyncProvider>
   );
 }
