@@ -237,6 +237,7 @@ export function WeddingInvitation({
             >
               <YearScroll
                 side={guest.side}
+                nextSectionId="thoi-gian-va-dia-diem"
                 year2026Content={
                   <div className="container-custom mx-auto max-w-3xl" />
                 }
