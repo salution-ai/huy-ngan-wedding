@@ -544,7 +544,9 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
     // for window-level non-passive touch listeners.
     const isIOSFBInApp = isIOS && isFBInApp;
 
-    const shouldAllowBackFromFinalYear = index === maxIndex && !isIOSFBInApp;
+    // We still allow "scroll up to go back to 2025" on the final year, but on
+    // iOS FB in-app we must NOT attach window-level wheel/touch listeners.
+    const shouldAllowBackFromFinalYear = index === maxIndex;
 
     const isActiveInViewport = () => {
       const rect = el.getBoundingClientRect();
@@ -767,12 +769,14 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
     };
 
     if (shouldAllowBackFromFinalYear) {
-      window.addEventListener("wheel", onFinalWheelBack, {
-        passive: false,
-        capture: true,
-      });
       el.addEventListener("touchstart", onFinalTouchStart, { passive: true });
       el.addEventListener("touchmove", onFinalTouchMove, { passive: false });
+      if (!isIOSFBInApp) {
+        window.addEventListener("wheel", onFinalWheelBack, {
+          passive: false,
+          capture: true,
+        });
+      }
     }
 
     let prevViewportActive = false;
@@ -803,7 +807,9 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
         removeInterceptListeners();
       }
       if (shouldAllowBackFromFinalYear) {
-        window.removeEventListener("wheel", onFinalWheelBack, true);
+        if (!isIOSFBInApp) {
+          window.removeEventListener("wheel", onFinalWheelBack, true);
+        }
         el.removeEventListener("touchstart", onFinalTouchStart);
         el.removeEventListener("touchmove", onFinalTouchMove);
       }
