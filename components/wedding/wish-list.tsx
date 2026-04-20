@@ -121,7 +121,7 @@ export function WishList({
               <div className="text-sm font-semibold text-stone-800 dark:text-stone-100">
                 {w.wishNickname}
               </div>
-              <div className="mt-1 text-sm font-normal text-stone-700 dark:text-stone-200">
+              <div className="mt-1 whitespace-pre-wrap break-words text-sm font-normal text-stone-700 dark:text-stone-200">
                 {w.wish}
               </div>
             </div>
