@@ -392,7 +392,7 @@ export function WeddingInvitation({
               Rất hân hạnh được đón tiếp và xin cảm ơn {guest.titleLow} rất
               nhiều vì đã dành thời gian quý báu của mình để có mặt tại buổi lễ
               đặc biệt của {guest.selfLow}. Sự hiện diện của {guest.titleLow} là
-              niềm vinh hạnh lớn đối với {guest.selfLow}💖💖
+              niềm vinh hạnh lớn đối với {guest.selfLow}. Thank you very muchh💖💖
               <br />
               <br />
               <br />
