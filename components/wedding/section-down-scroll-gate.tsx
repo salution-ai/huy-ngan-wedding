@@ -28,6 +28,17 @@ export function SectionDownScrollGate({
   const touchStartYRef = useRef<number | null>(null);
 
   useEffect(() => {
+    const ua = typeof navigator !== "undefined" ? navigator.userAgent ?? "" : "";
+    const isIOS =
+      /iPhone|iPad|iPod/i.test(ua) ||
+      (typeof navigator !== "undefined" &&
+        navigator.platform === "MacIntel" &&
+        (navigator.maxTouchPoints ?? 0) > 1);
+    const isFBInApp = /FBAN|FBAV|FB_IAB/i.test(ua);
+    // iOS FB/Messenger/IG in-app browsers are very sensitive to non-passive
+    // scroll listeners; snapping here can trap native scroll.
+    if (isIOS && isFBInApp) return;
+
     const section = document.getElementById(sectionId);
     if (!section) return;
 
