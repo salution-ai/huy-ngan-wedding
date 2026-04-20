@@ -470,6 +470,12 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
   const lockRef = useRef(false);
   const idleTimerRef = useRef<number | null>(null);
 
+  const isInAppWebView = useMemo(() => {
+    if (typeof navigator === "undefined") return false;
+    const ua = navigator.userAgent ?? "";
+    return /FBAN|FBAV|FB_IAB|Messenger|Instagram/i.test(ua);
+  }, []);
+
   const slides = useMemo<YearSlide[]>(() => {
     const byYear: Record<string, string[]> = {
       "2016": ["/gallery/2016.jpg", "/gallery/2016%20(2).jpg"],
@@ -502,6 +508,12 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
   const yearSuffix = currentYear.slice(2);
   const maxIndex = slides.length - 1;
   const isFinalYear = slide.kind === "final";
+  const canPrev = index > 0;
+  const canNext = index < maxIndex;
+
+  const navStep = (dir: 1 | -1) => {
+    setIndex((prev) => Math.max(0, Math.min(maxIndex, prev + dir)));
+  };
 
   useEffect(() => {
     const urls = Array.from(
@@ -522,8 +534,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
     // `touchmove` listener on `window` can break native scrolling even if we
     // don't call preventDefault. When the user reaches the final year (2026),
     // we want to fully "release" scroll control back to the page.
-    const shouldInterceptScroll = index < maxIndex;
-    const shouldAllowBackFromFinalYear = index === maxIndex;
+    const shouldInterceptScroll = !isInAppWebView && index < maxIndex;
 
     const isActiveInViewport = () => {
       const rect = el.getBoundingClientRect();
@@ -671,60 +682,9 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
       // element only (less likely to break native scroll in webviews).
     }
 
-    const onFinalWheelBack = (e: WheelEvent) => {
-      if (!shouldAllowBackFromFinalYear) return;
-      if (!isActiveInViewport()) return;
-      if (lockRef.current) {
-        e.preventDefault();
-        return;
-      }
-      // Only intercept upward wheel to go back a year; allow downward wheel to
-      // scroll the page normally.
-      if (e.deltaY < 0 && index > 0) {
-        e.preventDefault();
-        wheelAccumRef.current = 0;
-        step(-1);
-      }
-    };
-
-    const onFinalTouchStart = (e: TouchEvent) => {
-      if (!shouldAllowBackFromFinalYear) return;
-      if (!isActiveInViewport()) return;
-      touchStartYRef.current = e.touches[0]?.clientY ?? null;
-    };
-
-    const onFinalTouchMove = (e: TouchEvent) => {
-      if (!shouldAllowBackFromFinalYear) return;
-      if (!isActiveInViewport()) return;
-      if (lockRef.current) {
-        e.preventDefault();
-        return;
-      }
-      const startY = touchStartYRef.current;
-      if (startY == null) return;
-      const curY = e.touches[0]?.clientY;
-      if (curY == null) return;
-      const dy = startY - curY;
-      const threshold = 40;
-
-      // To go back (2026 -> 2025) the user swipes down (dy < 0).
-      // Only then do we prevent default to avoid weird scroll/bounce.
-      if (dy < 0) e.preventDefault();
-
-      if (dy < -threshold && index > 0) {
-        touchStartYRef.current = null;
-        step(-1);
-      }
-    };
-
-    if (shouldAllowBackFromFinalYear) {
-      window.addEventListener("wheel", onFinalWheelBack, {
-        passive: false,
-        capture: true,
-      });
-      el.addEventListener("touchstart", onFinalTouchStart, { passive: true });
-      el.addEventListener("touchmove", onFinalTouchMove, { passive: false });
-    }
+    // Do not attach any extra wheel/touch handlers for the final year.
+    // In Messenger/FB in-app webviews, non-passive touch handlers (even on
+    // specific elements) can prevent native page scrolling.
 
     let prevViewportActive = false;
     const onIntersect: IntersectionObserverCallback = () => {
@@ -755,15 +715,10 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
         window.removeEventListener("touchstart", onTouchStart, true);
         window.removeEventListener("touchmove", onTouchMove, true);
       }
-      if (shouldAllowBackFromFinalYear) {
-        window.removeEventListener("wheel", onFinalWheelBack, true);
-        el.removeEventListener("touchstart", onFinalTouchStart);
-        el.removeEventListener("touchmove", onFinalTouchMove);
-      }
     };
-  }, [index, maxIndex]);
+  }, [index, maxIndex, isInAppWebView]);
 
-  const inYearStepMode = index > 0 && index < maxIndex;
+  const inYearStepMode = !isInAppWebView && index > 0 && index < maxIndex;
 
   /** Màn 2026: hiện số năm một lúc rồi mờ dần. */
   const [finalYearDigitsOpacity, setFinalYearDigitsOpacity] = useState(1);
@@ -798,6 +753,27 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
           overscrollBehavior: inYearStepMode ? "contain" : "auto",
         }}
       >
+        {isInAppWebView ? (
+          <div className="pointer-events-none fixed bottom-4 left-4 z-30 flex gap-2">
+            <button
+              type="button"
+              onClick={() => navStep(-1)}
+              disabled={!canPrev}
+              className="pointer-events-auto rounded-full bg-black/70 px-4 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-black/80 active:bg-black/90 disabled:opacity-40"
+            >
+              Năm trước
+            </button>
+            <button
+              type="button"
+              onClick={() => navStep(1)}
+              disabled={!canNext}
+              className="pointer-events-auto rounded-full bg-black/70 px-4 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-black/80 active:bg-black/90 disabled:opacity-40"
+            >
+              Năm sau
+            </button>
+          </div>
+        ) : null}
+
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={currentYear}
