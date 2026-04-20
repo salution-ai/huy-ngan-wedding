@@ -540,11 +540,11 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
         navigator.platform === "MacIntel" &&
         (navigator.maxTouchPoints ?? 0) > 1);
     const isFBInApp = /FBAN|FBAV|FB_IAB/i.test(ua);
-    const isMessengerInApp =
-      /Messenger/i.test(ua) || /FBAN\/Messenger/i.test(ua) || /MESSENGER/i.test(ua);
-    const isIOSMessengerInApp = isIOS && isFBInApp && isMessengerInApp;
+    // Treat all iOS Facebook in-app browsers (Messenger/Facebook/IG IAB) as "unsafe"
+    // for window-level non-passive touch listeners.
+    const isIOSFBInApp = isIOS && isFBInApp;
 
-    const shouldAllowBackFromFinalYear = index === maxIndex && !isIOSMessengerInApp;
+    const shouldAllowBackFromFinalYear = index === maxIndex && !isIOSFBInApp;
 
     const isActiveInViewport = () => {
       const rect = el.getBoundingClientRect();
@@ -557,19 +557,28 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
       return visible / vh >= 0.6;
     };
 
+    const removeInterceptListeners = () => {
+      window.removeEventListener("wheel", onWheel, true);
+      if (isIOSFBInApp) {
+        el.removeEventListener("touchstart", onTouchStart);
+        el.removeEventListener("touchmove", onTouchMove);
+      } else {
+        window.removeEventListener("touchstart", onTouchStart, true);
+        window.removeEventListener("touchmove", onTouchMove, true);
+      }
+    };
+
     const step = (dir: 1 | -1) => {
       if (lockRef.current) return;
       setIndex((prev) => {
         const next = Math.max(0, Math.min(maxIndex, prev + dir));
         if (next === prev) return prev;
-        if (next === maxIndex && isIOSMessengerInApp) {
+        if (next === maxIndex && isIOSFBInApp) {
           releaseNativeScrollRef.current = true;
-          // Immediately detach window-level listeners; do NOT wait for effect cleanup.
-          // This prevents the "need to scroll up to prime" bug on iOS Messenger.
           if (shouldInterceptScroll) {
-            window.removeEventListener("wheel", onWheel, true);
-            window.removeEventListener("touchstart", onTouchStart, true);
-            window.removeEventListener("touchmove", onTouchMove, true);
+            // Immediately detach listeners; do NOT wait for effect cleanup.
+            // This prevents native scroll from getting "stuck" on iOS in-app browsers.
+            removeInterceptListeners();
           }
         }
         lockRef.current = true;
@@ -690,14 +699,21 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
         passive: false,
         capture: true,
       });
-      window.addEventListener("touchstart", onTouchStart, {
-        passive: true,
-        capture: true,
-      });
-      window.addEventListener("touchmove", onTouchMove, {
-        passive: false,
-        capture: true,
-      });
+      // iOS FB in-app browsers can get native scrolling "stuck" when registering
+      // non-passive touch listeners on window. Attach to the element instead.
+      if (isIOSFBInApp) {
+        el.addEventListener("touchstart", onTouchStart, { passive: true });
+        el.addEventListener("touchmove", onTouchMove, { passive: false });
+      } else {
+        window.addEventListener("touchstart", onTouchStart, {
+          passive: true,
+          capture: true,
+        });
+        window.addEventListener("touchmove", onTouchMove, {
+          passive: false,
+          capture: true,
+        });
+      }
     } else {
       // Final year (2026): do NOT attach non-passive touch listeners on window.
       // But still allow "go back to 2025" gestures, attached to the component
@@ -784,9 +800,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
       clearIdle();
       io.disconnect();
       if (shouldInterceptScroll) {
-        window.removeEventListener("wheel", onWheel, true);
-        window.removeEventListener("touchstart", onTouchStart, true);
-        window.removeEventListener("touchmove", onTouchMove, true);
+        removeInterceptListeners();
       }
       if (shouldAllowBackFromFinalYear) {
         window.removeEventListener("wheel", onFinalWheelBack, true);
