@@ -814,7 +814,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
                 <div className="relative min-h-screen w-full">
                   <Year2026Hero side={side} />
                 </div>
-                {year2026Content != null && year2026Content !== false ? (
+                {/* {year2026Content != null && year2026Content !== false ? (
                   <motion.div
                     initial={false}
                     animate={{
@@ -826,7 +826,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
                   >
                     {year2026Content}
                   </motion.div>
-                ) : null}
+                ) : null} */}
               </>
             )}
           </motion.div>
