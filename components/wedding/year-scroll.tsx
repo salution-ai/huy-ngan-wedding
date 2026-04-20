@@ -463,16 +463,12 @@ export type YearScrollProps = {
   side?: "" | "groom" | "bride";
 };
 
-export function YearScroll({ side }: YearScrollProps) {
+export function YearScroll({ year2026Content, side }: YearScrollProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const touchStartYRef = useRef<number | null>(null);
   const wheelAccumRef = useRef(0);
   const lockRef = useRef(false);
   const idleTimerRef = useRef<number | null>(null);
-  // When stepping into the final year (2026), we must "release" native scrolling
-  // immediately to avoid a brief period where the previous wheel/touch handlers
-  // still preventDefault (common in in-app webviews).
-  const releaseNativeScrollRef = useRef(false);
 
   const slides = useMemo<YearSlide[]>(() => {
     const byYear: Record<string, string[]> = {
@@ -527,12 +523,7 @@ export function YearScroll({ side }: YearScrollProps) {
     // don't call preventDefault. When the user reaches the final year (2026),
     // we want to fully "release" scroll control back to the page.
     const shouldInterceptScroll = index < maxIndex;
-    const isMessengerInApp =
-      typeof navigator !== "undefined" &&
-      /Messenger|FBAN\/Messenger|FB_IAB\/MESSENGER|FBAV|FBAN/i.test(
-        navigator.userAgent ?? "",
-      );
-    const shouldAllowBackFromFinalYear = index === maxIndex && !isMessengerInApp;
+    const shouldAllowBackFromFinalYear = index === maxIndex;
 
     const isActiveInViewport = () => {
       const rect = el.getBoundingClientRect();
@@ -550,17 +541,6 @@ export function YearScroll({ side }: YearScrollProps) {
       setIndex((prev) => {
         const next = Math.max(0, Math.min(maxIndex, prev + dir));
         if (next === prev) return prev;
-        if (next === maxIndex) {
-          releaseNativeScrollRef.current = true;
-          // Critical for Messenger in-app webview: remove the window-level
-          // non-passive touch listeners immediately, otherwise native scroll can
-          // remain "stuck" until another gesture happens.
-          if (isMessengerInApp && shouldInterceptScroll) {
-            window.removeEventListener("wheel", onWheel, true);
-            window.removeEventListener("touchstart", onTouchStart, true);
-            window.removeEventListener("touchmove", onTouchMove, true);
-          }
-        }
         lockRef.current = true;
         window.setTimeout(() => {
           lockRef.current = false;
@@ -594,8 +574,6 @@ export function YearScroll({ side }: YearScrollProps) {
     const onWheel = (e: WheelEvent) => {
       if (!isActiveInViewport()) return;
       scheduleIdleAdvance();
-      // If we're transitioning into 2026, never block native scroll.
-      if (releaseNativeScrollRef.current) return;
       if (lockRef.current) {
         e.preventDefault();
         return;
@@ -649,8 +627,6 @@ export function YearScroll({ side }: YearScrollProps) {
       if (!shouldInterceptScroll) return;
       if (!isActiveInViewport()) return;
       scheduleIdleAdvance();
-      // If we're transitioning into 2026, never block native scroll.
-      if (releaseNativeScrollRef.current) return;
       if (lockRef.current) {
         e.preventDefault();
         return;
@@ -791,15 +767,19 @@ export function YearScroll({ side }: YearScrollProps) {
 
   /** Màn 2026: hiện số năm một lúc rồi mờ dần. */
   const [finalYearDigitsOpacity, setFinalYearDigitsOpacity] = useState(1);
+  const [finalContentVisible, setFinalContentVisible] = useState(false);
 
   useEffect(() => {
     if (!isFinalYear) {
       setFinalYearDigitsOpacity(1);
+      setFinalContentVisible(false);
       return;
     }
     setFinalYearDigitsOpacity(1);
+    setFinalContentVisible(false);
     const t = window.setTimeout(() => {
       setFinalYearDigitsOpacity(0);
+      setFinalContentVisible(true);
     }, FINAL_YEAR_DIGITS_VISIBLE_MS);
     return () => window.clearTimeout(t);
   }, [isFinalYear]);
