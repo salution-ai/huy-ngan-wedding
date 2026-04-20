@@ -380,7 +380,7 @@ export function WeddingInvitation({
             />
 
             <div
-              className={`${greatVibes.className} text-3xl  text-center pb-24`}
+              className={`${greatVibes.className} text-3xl  text-center pb-12 px-4`}
               data-wedding-reveal
             >
               Một lần nữa, {guest.selfLow} xin kính mời {guest.titleLow} {guest.name} đến dự buổi lễ thành hôn của {guest.selfLow}.
