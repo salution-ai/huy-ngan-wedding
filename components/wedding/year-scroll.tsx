@@ -518,6 +518,13 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
     const el = ref.current;
     if (!el) return;
 
+    // In some in-app webviews (e.g. Messenger), merely registering a non-passive
+    // `touchmove` listener on `window` can break native scrolling even if we
+    // don't call preventDefault. When the user reaches the final year (2026),
+    // we want to fully "release" scroll control back to the page.
+    const shouldInterceptScroll = index < maxIndex;
+    const shouldAllowBackFromFinalYear = index === maxIndex;
+
     const isActiveInViewport = () => {
       const rect = el.getBoundingClientRect();
       // YearScroll is intended to "own" the viewport while in step mode.
@@ -617,6 +624,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
     };
 
     const onTouchMove = (e: TouchEvent) => {
+      if (!shouldInterceptScroll) return;
       if (!isActiveInViewport()) return;
       scheduleIdleAdvance();
       if (lockRef.current) {
@@ -643,16 +651,80 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
       }
     };
 
-    // Attach to window so wheel over "side background" still steps years.
-    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
-    window.addEventListener("touchstart", onTouchStart, {
-      passive: true,
-      capture: true,
-    });
-    window.addEventListener("touchmove", onTouchMove, {
-      passive: false,
-      capture: true,
-    });
+    if (shouldInterceptScroll) {
+      // Attach to window so wheel over "side background" still steps years.
+      window.addEventListener("wheel", onWheel, {
+        passive: false,
+        capture: true,
+      });
+      window.addEventListener("touchstart", onTouchStart, {
+        passive: true,
+        capture: true,
+      });
+      window.addEventListener("touchmove", onTouchMove, {
+        passive: false,
+        capture: true,
+      });
+    } else {
+      // Final year (2026): do NOT attach non-passive touch listeners on window.
+      // But still allow "go back to 2025" gestures, attached to the component
+      // element only (less likely to break native scroll in webviews).
+    }
+
+    const onFinalWheelBack = (e: WheelEvent) => {
+      if (!shouldAllowBackFromFinalYear) return;
+      if (!isActiveInViewport()) return;
+      if (lockRef.current) {
+        e.preventDefault();
+        return;
+      }
+      // Only intercept upward wheel to go back a year; allow downward wheel to
+      // scroll the page normally.
+      if (e.deltaY < 0 && index > 0) {
+        e.preventDefault();
+        wheelAccumRef.current = 0;
+        step(-1);
+      }
+    };
+
+    const onFinalTouchStart = (e: TouchEvent) => {
+      if (!shouldAllowBackFromFinalYear) return;
+      if (!isActiveInViewport()) return;
+      touchStartYRef.current = e.touches[0]?.clientY ?? null;
+    };
+
+    const onFinalTouchMove = (e: TouchEvent) => {
+      if (!shouldAllowBackFromFinalYear) return;
+      if (!isActiveInViewport()) return;
+      if (lockRef.current) {
+        e.preventDefault();
+        return;
+      }
+      const startY = touchStartYRef.current;
+      if (startY == null) return;
+      const curY = e.touches[0]?.clientY;
+      if (curY == null) return;
+      const dy = startY - curY;
+      const threshold = 40;
+
+      // To go back (2026 -> 2025) the user swipes down (dy < 0).
+      // Only then do we prevent default to avoid weird scroll/bounce.
+      if (dy < 0) e.preventDefault();
+
+      if (dy < -threshold && index > 0) {
+        touchStartYRef.current = null;
+        step(-1);
+      }
+    };
+
+    if (shouldAllowBackFromFinalYear) {
+      window.addEventListener("wheel", onFinalWheelBack, {
+        passive: false,
+        capture: true,
+      });
+      el.addEventListener("touchstart", onFinalTouchStart, { passive: true });
+      el.addEventListener("touchmove", onFinalTouchMove, { passive: false });
+    }
 
     let prevViewportActive = false;
     const onIntersect: IntersectionObserverCallback = () => {
@@ -678,9 +750,16 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
     return () => {
       clearIdle();
       io.disconnect();
-      window.removeEventListener("wheel", onWheel, true);
-      window.removeEventListener("touchstart", onTouchStart, true);
-      window.removeEventListener("touchmove", onTouchMove, true);
+      if (shouldInterceptScroll) {
+        window.removeEventListener("wheel", onWheel, true);
+        window.removeEventListener("touchstart", onTouchStart, true);
+        window.removeEventListener("touchmove", onTouchMove, true);
+      }
+      if (shouldAllowBackFromFinalYear) {
+        window.removeEventListener("wheel", onFinalWheelBack, true);
+        el.removeEventListener("touchstart", onFinalTouchStart);
+        el.removeEventListener("touchmove", onFinalTouchMove);
+      }
     };
   }, [index, maxIndex]);
 
