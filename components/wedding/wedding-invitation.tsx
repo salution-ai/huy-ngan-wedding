@@ -21,8 +21,7 @@ import { SectionUpScrollGate } from "@/components/wedding/section-up-scroll-gate
 import { ComingConfirmButton } from "@/components/wedding/coming-confirm-button";
 import { ComingDeclineButton } from "@/components/wedding/coming-decline-button";
 import { ComingConfirmPublicForm } from "@/components/wedding/coming-confirm-public-form";
-import { GalleryHorizontalMarquee } from "@/components/wedding/gallery-horizontal-marquee";
-import { GalleryGridScrollFlyIn } from "@/components/wedding/gallery-grid-scroll-fly-in";
+import { ResponsiveGallery } from "@/components/wedding/responsive-gallery";
 import { WeddingPageTextReveal } from "@/components/wedding/wedding-page-text-reveal";
 import { WishList } from "@/components/wedding/wish-list";
 import { GuestAliasSyncProvider } from "@/components/wedding/guest-alias-sync";
@@ -109,12 +108,6 @@ export function WeddingInvitation({
 
   const randomGalleryItems = pickRandomItems(gallery.items ?? [], 6);
   const randomDesktopGalleryItems = pickRandomItems(gallery.items ?? [], 12);
-
-  // vd: mobile khi width < 1024px (theo breakpoint lg của Tailwind)
-  const isMobile =
-    typeof window !== "undefined"
-      ? window.matchMedia("(max-width: 1023px)").matches
-      : false;
 
   return (
     <GuestAliasSyncProvider>
@@ -376,19 +369,10 @@ export function WeddingInvitation({
                 >
                   Thư viện ảnh
                 </div>
-                <GalleryGridScrollFlyIn
-                  items={
-                    isMobile ? randomGalleryItems : randomDesktopGalleryItems
-                  }
-                />
-                <GalleryHorizontalMarquee
-                  items={gallery.items}
-                  className="lg:hidden"
-                />
-                <GalleryHorizontalMarquee
-                  items={gallery.items}
-                  reverse
-                  className="mt-2 lg:hidden"
+                <ResponsiveGallery
+                  mobileItems={randomGalleryItems}
+                  desktopItems={randomDesktopGalleryItems}
+                  allItems={gallery.items}
                 />
               </div>
             </section>
