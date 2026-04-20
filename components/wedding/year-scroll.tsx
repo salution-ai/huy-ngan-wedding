@@ -643,16 +643,6 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
       }
     };
 
-    // IMPORTANT: On some in-app browsers (notably Messenger), merely attaching
-    // non-passive touchmove listeners on window can break normal page scrolling
-    // at the final (scrollable) screen. At 2026 we want native scrolling only.
-    if (index >= maxIndex) {
-      clearIdle();
-      wheelAccumRef.current = 0;
-      touchStartYRef.current = null;
-      return;
-    }
-
     // Attach to window so wheel over "side background" still steps years.
     window.addEventListener("wheel", onWheel, { passive: false, capture: true });
     window.addEventListener("touchstart", onTouchStart, {
