@@ -12,7 +12,6 @@ import {
 import { ScrollDownHint } from "@/components/wedding/scroll-down-hint";
 import { YearScroll } from "@/components/wedding/year-scroll";
 import { WishForm } from "@/components/wedding/wish-form";
-import { WishCta } from "@/components/wedding/wish-cta";
 import { AutoScrollOnIdle } from "@/components/wedding/auto-scroll-on-idle";
 import { OneScreenScrollGate } from "@/components/wedding/one-screen-scroll-gate";
 import { SectionScrollSnap } from "@/components/wedding/section-scroll-snap";
@@ -237,7 +236,6 @@ export function WeddingInvitation({
             >
               <YearScroll
                 side={guest.side}
-                nextSectionId="thoi-gian-va-dia-diem"
                 year2026Content={
                   <div className="container-custom mx-auto max-w-3xl" />
                 }

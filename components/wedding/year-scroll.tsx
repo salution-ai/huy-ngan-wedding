@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, MotionConfig } from "framer-motion";
 import { ScrollDownHint } from "@/components/wedding/scroll-down-hint";
 import { weddingContent } from "@/content/wedding";
-import { Luxurious_Script, Playwrite_IE, Roboto_Slab } from "next/font/google";
+import { Luxurious_Script, Roboto_Slab } from "next/font/google";
 
 type ImagesSlide = {
   kind: "images";
@@ -29,10 +29,6 @@ const luxuriousScript = Luxurious_Script({
   weight: ["400"],
   subsets: ["latin"],
   variable: "--font-luxurious-script",
-});
-
-const playwrightIE = Playwrite_IE({
-  variable: "--font-playwrite-ie",
 });
 
 type YearSlide = ImagesSlide | FinalSlide;
@@ -440,22 +436,14 @@ export type YearScrollProps = {
   /** Nội dung thiệp / block thường — chỉ hiện ở màn 2026, cuộn trang bình thường. */
   year2026Content?: ReactNode;
   side?: "" | "groom" | "bride";
-  /** Khi đang ở màn cuối (2026), vuốt lên/cuộn xuống đủ ngưỡng sẽ nhảy tới section này. */
-  nextSectionId?: string;
 };
 
-export function YearScroll({
-  year2026Content,
-  side,
-  nextSectionId,
-}: YearScrollProps) {
+export function YearScroll({ year2026Content, side }: YearScrollProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const touchStartYRef = useRef<number | null>(null);
   const wheelAccumRef = useRef(0);
   const lockRef = useRef(false);
   const idleTimerRef = useRef<number | null>(null);
-  const finalExitAccumRef = useRef(0);
-  const finalExitLockRef = useRef(false);
 
   const slides = useMemo<YearSlide[]>(() => {
     const byYear: Record<string, string[]> = {
@@ -530,20 +518,6 @@ export function YearScroll({
       });
     };
 
-    const exitFinalToNext = () => {
-      if (!nextSectionId) return false;
-      if (finalExitLockRef.current) return true;
-      const next = document.getElementById(nextSectionId);
-      if (!next) return false;
-      finalExitLockRef.current = true;
-      next.scrollIntoView({ behavior: "smooth", block: "start" });
-      window.setTimeout(() => {
-        finalExitLockRef.current = false;
-        finalExitAccumRef.current = 0;
-      }, 750);
-      return true;
-    };
-
     const clearIdle = () => {
       if (idleTimerRef.current != null) {
         window.clearTimeout(idleTimerRef.current);
@@ -574,13 +548,6 @@ export function YearScroll({
       }
 
       if (index === maxIndex && e.deltaY > 0) {
-        if (nextSectionId) {
-          finalExitAccumRef.current += e.deltaY;
-          if (finalExitAccumRef.current > 120) {
-            e.preventDefault();
-            exitFinalToNext();
-          }
-        }
         wheelAccumRef.current = 0;
         return;
       }
@@ -640,17 +607,6 @@ export function YearScroll({
 
       if ((dy > 0 && index < maxIndex) || (dy < 0 && index > 0)) {
         e.preventDefault();
-      }
-
-      // Ở màn cuối (2026), vuốt lên thêm một đoạn để nhảy hẳn sang section kế tiếp.
-      if (index === maxIndex && dy > 0 && nextSectionId) {
-        finalExitAccumRef.current += dy;
-        if (finalExitAccumRef.current > 140) {
-          e.preventDefault();
-          touchStartYRef.current = null;
-          exitFinalToNext();
-          return;
-        }
       }
 
       if (dy > threshold && index < maxIndex) {
@@ -754,7 +710,7 @@ export function YearScroll({
                 <div className="relative min-h-screen w-full">
                   <Year2026Hero side={side} />
                 </div>
-                {/* {year2026Content != null && year2026Content !== false ? (
+                {year2026Content != null && year2026Content !== false ? (
                   <motion.div
                     initial={false}
                     animate={{
@@ -766,7 +722,7 @@ export function YearScroll({
                   >
                     {year2026Content}
                   </motion.div>
-                ) : null} */}
+                ) : null}
               </>
             )}
           </motion.div>
