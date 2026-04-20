@@ -72,7 +72,7 @@ export function ComingConfirmPublicForm({ guest, className }: Props) {
     >
       <p className="text-center text-base font-semibold text-stone-800 dark:text-stone-100 md:text-lg">
         Quý khách vui lòng điền họ tên và số người tham dự để xác nhận cùng{" "}
-        {guest.selfLow} nhé 💖.
+        {guest.selfLow} nhé 💖
       </p>
       <div className="flex flex-col gap-2">
         <Label htmlFor="coming-guest-name" className="text-stone-800 dark:text-stone-100">
