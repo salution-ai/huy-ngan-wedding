@@ -319,10 +319,18 @@ export function WeddingInvitation({
                     </div>
                   </>
                 ) : (
-                  <ComingConfirmPublicForm
-                    guest={guest}
-                    className={`${robotoSlab.className} mt-4`}
-                  />
+                  <>
+                    <ComingConfirmPublicForm
+                      guest={guest}
+                      className={`${robotoSlab.className} mt-4`}
+                    />
+                    <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
+                      <ComingDeclineButton
+                        guest={guest}
+                        className="bg-white text-[#b22f2f]"
+                      />
+                    </div>
+                  </>
                 )}
               </div>
             </section>

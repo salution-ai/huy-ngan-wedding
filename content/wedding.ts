@@ -150,10 +150,10 @@ export const weddingContent = {
         src: "/album/16.JPG",
         alt: "Khoảnh khắc 16",
       },
-      {
-        src: "/album/17.JPG",
-        alt: "Khoảnh khắc 17",
-      },
+      // {
+      //   src: "/album/17.JPG",
+      //   alt: "Khoảnh khắc 17",
+      // },
       {
         src: "/album/18.JPG",
         alt: "Khoảnh khắc 18",
@@ -246,10 +246,10 @@ export const weddingContent = {
         src: "/album/40.JPG",
         alt: "Khoảnh khắc 40",
       },
-      {
-        src: "/album/41.JPG",
-        alt: "Khoảnh khắc 41",
-      },
+      // {
+      //   src: "/album/41.JPG",
+      //   alt: "Khoảnh khắc 41",
+      // },
       {
         src: "/album/42.JPG",
         alt: "Khoảnh khắc 42",
