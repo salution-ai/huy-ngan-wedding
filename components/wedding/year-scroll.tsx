@@ -229,6 +229,15 @@ function Year2026Hero({ side }: { side?: "" | "groom" | "bride" }) {
   } as const;
 
   const isBrideSide = side === "bride";
+  const [isCoarsePointer, setIsCoarsePointer] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(pointer: coarse)");
+    const onChange = () => setIsCoarsePointer(mq.matches);
+    onChange();
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   const groomParents = (
     <div className="flex flex-1 flex-col items-center gap-1 text-center text-[13px]">
@@ -366,15 +375,31 @@ function Year2026Hero({ side }: { side?: "" | "groom" | "bride" }) {
         </div>
         <div className="mt-4 w-[80%] max-w-lg px-4">
           {mapEmbed ? (
-            <div className="aspect-[5/3] w-full overflow-hidden rounded-lg border border-[#b22f2f]/30 bg-stone-100 shadow-sm">
+            <div className="relative aspect-[5/3] w-full overflow-hidden rounded-lg border border-[#b22f2f]/30 bg-stone-100 shadow-sm">
               <iframe
                 title="Bản đồ địa điểm hôn lễ"
                 src={mapEmbed}
-                className="h-full w-full border-0"
+                className={
+                  isCoarsePointer
+                    ? "h-full w-full border-0 pointer-events-none"
+                    : "h-full w-full border-0"
+                }
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 allowFullScreen
               />
+              {isCoarsePointer ? (
+                <div className="pointer-events-none absolute inset-0 flex items-end justify-center p-3">
+                  <a
+                    href={mapEmbed}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="pointer-events-auto rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-[#b22f2f] shadow-md backdrop-blur hover:bg-white"
+                  >
+                    Mở bản đồ
+                  </a>
+                </div>
+              ) : null}
               {/* <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3719.942979708695!2d106.09018461184922!3d21.194423980415372!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31350c418fd79151%3A0xf759391b2c7844a7!2zTmjDoCB2xINuIGhvw6Ega2h1IHBo4buRIDQgVGjhu4sgQ-G6p3U!5e0!3m2!1svi!2s!4v1775882036991!5m2!1svi!2s" width="600" height="450" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe> */}
             </div>
           ) : (
