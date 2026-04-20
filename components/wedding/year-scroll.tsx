@@ -469,6 +469,10 @@ export function YearScroll({ side }: YearScrollProps) {
   const wheelAccumRef = useRef(0);
   const lockRef = useRef(false);
   const idleTimerRef = useRef<number | null>(null);
+  // When stepping into the final year (2026), we must "release" native scrolling
+  // immediately to avoid a brief period where the previous wheel/touch handlers
+  // still preventDefault (common in in-app webviews).
+  const releaseNativeScrollRef = useRef(false);
 
   const slides = useMemo<YearSlide[]>(() => {
     const byYear: Record<string, string[]> = {
@@ -546,6 +550,9 @@ export function YearScroll({ side }: YearScrollProps) {
       setIndex((prev) => {
         const next = Math.max(0, Math.min(maxIndex, prev + dir));
         if (next === prev) return prev;
+        if (next === maxIndex) {
+          releaseNativeScrollRef.current = true;
+        }
         lockRef.current = true;
         window.setTimeout(() => {
           lockRef.current = false;
@@ -579,6 +586,8 @@ export function YearScroll({ side }: YearScrollProps) {
     const onWheel = (e: WheelEvent) => {
       if (!isActiveInViewport()) return;
       scheduleIdleAdvance();
+      // If we're transitioning into 2026, never block native scroll.
+      if (releaseNativeScrollRef.current) return;
       if (lockRef.current) {
         e.preventDefault();
         return;
@@ -632,6 +641,8 @@ export function YearScroll({ side }: YearScrollProps) {
       if (!shouldInterceptScroll) return;
       if (!isActiveInViewport()) return;
       scheduleIdleAdvance();
+      // If we're transitioning into 2026, never block native scroll.
+      if (releaseNativeScrollRef.current) return;
       if (lockRef.current) {
         e.preventDefault();
         return;
