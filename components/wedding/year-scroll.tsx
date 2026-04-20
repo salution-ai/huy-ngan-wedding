@@ -663,7 +663,7 @@ export function YearScroll({ year2026Content, side }: YearScrollProps) {
       });
       window.addEventListener("touchmove", onTouchMove, {
         passive: false,
-        capture: true,
+        // capture: true,
       });
     } else {
       // Final year (2026): do NOT attach non-passive touch listeners on window.
